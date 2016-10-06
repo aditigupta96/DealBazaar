@@ -153,6 +153,36 @@ input[type=text], select
     box-sizing: border-box;
 }
 
+input[type=email], select
+{	
+	background-color:grey;
+	color:black;
+	font-size:12px;
+	opacity:1;
+	width:70%;
+	padding: 10px 16px;
+    margin: 2px 0;
+    display: inline-block;
+    border: 2px solid #ccc;
+    border-radius: 2px;
+    box-sizing: border-box;
+}
+
+input[type=number], select
+{	
+	background-color:grey;
+	color:black;
+	font-size:12px;
+	opacity:1;
+	width:70%;
+	padding: 10px 16px;
+    margin: 2px 0;
+    display: inline-block;
+    border: 2px solid #ccc;
+    border-radius: 2px;
+    box-sizing: border-box;
+}
+
 input[type=Password], select
 {	
 	background-color:grey;
