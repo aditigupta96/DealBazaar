@@ -142,7 +142,7 @@ def login():
         #     session['user'] = request.form['email']
         #     return redirect(url_for('after_login'))
 
-    return render_template('index.html')        
+    return render_template('login.html')        
 
 @app.route('/home')
 def after_login():
