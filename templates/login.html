@@ -1,27 +1,59 @@
 <!DOCTYPE html>
 <html>
+<head>
+  
+  <script type="text/javascript">
+        $('input:text').click(
+      function()
+      {
+          $(this).val('');
+      });
 
-  <head>
-    <title>DealBazaar login page</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="static/stylesheets/style.css">
-  </head>
+      $('input:Password').click(
+      function()
+      {
+          $(this).val('');
+      });
 
-  <body>
-    <table>
-      <tr>
-        <td style= "width:30%;">
-          <img class = "newappIcon" src="static/images/newapp-icon.png">
-        <td>
-            <h1>Please login</h1>
-            <form method="POST">
-                <input type="email" name="email">
-                <input type="password" name="password">
-                <input type="submit">
-            </form>
-    </table>
-  </body>
 
+    </script>
+
+  <title>DEALBAZAAR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="static/stylesheets/font.css">
+</head>
+
+
+<body>
+    <div class="background">
+      <img id="picture" src="static/images/picture.jpg" alt="background" width="1350" height="640">
+    </div>
+
+    <div id="name">
+      <img src="static/images/dblogo.png" alt="Profile Picture" width="70" height="70">
+      <p id="heading">DealBazaar.com</p>
+      <p id="space1"> </p>
+      <p id="tagline">Buy.Sell.Rent.</p>
+    </div> 
+
+    <div id="login">
+      <img id="logo" src="static/images/logo.png" alt="Profile Picture" width="85" height="85">
+      <p id="space"> </p>
+      <form id="form" method="post">
+        <center>
+        <input type="text" name="Emailid" placeholder="Email Id"><br>
+        <br>
+        <input type="Password" name="Password" placeholder="Password"><br>
+        <br>
+        <input type="submit" value="LOG IN" stlye="font-weight:bold" ><br>
+        </center>
+      </form>
+  
+      <center>
+        <a href="register.htm" target="_self"> <button class="button">JOIN US TODAY</button> </a>
+      </center>
+    </div>
+
+</body>
 </html>
