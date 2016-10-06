@@ -1,32 +1,62 @@
 <!DOCTYPE html>
 <html>
+<head>
 
-  <head>
-    <title>DealBazaar login page</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="static/stylesheets/style.css">
-  </head>
+    <script type="text/javascript">
+        $('input:text').click(
+        function()
+        {
+            $(this).val('');
+        });
 
-  <body>
-    <table>
-      <tr>
-        <td style= "width:30%;">
-          <img class = "newappIcon" src="static/images/newapp-icon.png">
-        <td>
-            <h1>Sign up</h1>
-            <form method="POST">
-                <p>Name : <input type="text" name="name" ></p>
-                <p><input type="email" name="email"></p>
-                <p><input type="password" name="password"></p>
-                <p><input type="number" name="contact"></p>
-                <p><input type="text" name="college"></p>
-                <p><input type="text" name="address"></p>
-                <p><input type="text" name="city"></p>
-                <p><input type="submit"></p>
-            </form>
-    </table>
-  </body>
+        $('input:Password').click(
+        function()
+        {
+            $(this).val('');
+        });
 
+    </script>
+
+    <title>REGISTER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="static/stylesheets/font.css">
+</head>
+
+<body>
+<div class="background">
+<img id="picture" src="static/images/picture.jpg" alt="background" width="1350" height="640">
+</div>
+<div id="name">
+<img src="static/images/dblogo.png" alt="Profile Picture" width="70" height="70">
+<p id="heading">DealBazaar.com</p>
+<p id="space1"> </p>
+<p id="tagline">Buy.Sell.Rent.</p>
+</div> 
+
+<div id="register">
+    <img id="logo" src="static/images/logo.png" alt="Profile Picture" width="85" height="85">
+    <p id="space"> </p>
+    <form id="form" method="post">
+        <center>
+        <input id="first" type="text" name="name" placeholder="Name"><br>
+        <br>
+        <input type="email" name="email" placeholder="Email Id"><br>
+        <br>
+        <input type="text" name="address" placeholder="Address"><br>
+        <br>
+        <input type="text" name="college" placeholder="Name of the Institute"><br>
+        <br>
+        <input type="text" name="city" placeholder="City"><br>
+        <br>
+        <input type="number" name="contact" placeholder="Phone Number"><br>
+        <br>
+        <input type="Password" name="password" placeholder="Password"><br>
+        <br>
+        <input type="submit" value="REGISTER" style="font-weight:bold;" ><br>
+        </center>
+    </form>
+</div>
+
+</body>
 </html>
