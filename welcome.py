@@ -15,14 +15,18 @@
 import os 
 import couchdb
 
-from flask import Flask, jsonify, session, render_template, request, redirect, g, url_for
+from flask import Flask, jsonify, session, render_template, request, redirect, g, url_for, flash
 # from .models import User
 from datetime import datetime
 from couchdb.mapping import Document, TextField, DateTimeField, ListField, FloatField, IntegerField
+from werkzeug.utils import secure_filename
+from werkzeug import FileStorage
+from flask_uploads import (UploadSet, configure_uploads, IMAGES, UploadNotAllowed)
+import uuid
 
 
-app = Flask(__name__)
-app.secret_key = os.urandom(24)
+
+UPLOADED_PHOTOS_DEST = 'uploads'
 
 cloudant_data = {
     "username": "052ca863-0f20-49a8-9813-330b0813683a-bluemix",
@@ -31,7 +35,21 @@ cloudant_data = {
     "port": '443',
 }
 
+
+
+app = Flask(__name__)
+app.config.from_object(__name__)
+app.config.from_envvar('DEALBAZAAR_SETTINGS', silent=True)
+app.secret_key = os.urandom(24)
+
+
+
+uploaded_photos = UploadSet('photos', IMAGES)
+configure_uploads(app, uploaded_photos)
+
+
 class User(Document):
+    doc_type = 'user'
     name = TextField()
     email = TextField()
     password = TextField()
@@ -41,6 +59,19 @@ class User(Document):
     address = TextField()
     createdate = DateTimeField(default=datetime.now)
 
+
+class Item(Document):
+    doc_type = 'item'
+    name = TextField()
+    description = TextField()
+    original_price = IntegerField()
+    date = DateTimeField(default=datetime.now)
+    user = TextField()
+    filename = TextField()
+
+    @property
+    def imgsrc(self):
+        return uploaded_photos.url(self.filename)
 
 
 def get_db():
@@ -58,6 +89,13 @@ def get_db():
 # @app.teardown_appcontext
 # def close_db(error):
 #     if hasattr(g, 'db')
+
+@app.before_request
+def before_request():
+    g.user = None
+    if 'user' in session:
+        g.user = session['user']
+
 
 @app.route('/')
 def Welcome():
@@ -104,20 +142,55 @@ def login():
         #     session['user'] = request.form['email']
         #     return redirect(url_for('after_login'))
 
-    return render_template('login.html')        
+    return render_template('index.html')        
 
 @app.route('/home')
 def after_login():
     if g.user:
+
         return render_template('welcome.html')
 
     return redirect(url_for('login'))
 
-@app.before_request
-def before_request():
-    g.user = None
-    if 'user' in session:
-        g.user = session['user']
+
+@app.route('/sell', methods=['GET', 'POST'])
+def post_item():
+    if g.user:
+        if request.method == 'POST':
+            item = Item()
+
+            form_data = request.form
+            photo = request.files.get('photo')
+            item.name = form_data.get('item_name',None)
+            item.description = form_data.get('description',None)
+            item.original_price = form_data.get('original_price',None)
+            item.user = g.user.get('email', None)
+            print request.files['photo']
+            try:
+                filename = uploaded_photos.save(photo)
+            except UploadNotAllowed:
+                flash("The upload was not allowed")
+            else:
+                item.filename = filename
+
+            db = get_db()
+            item.id = uuid.uuid4().hex
+            item.store(db)
+
+            #return "Success...!!!"
+            return item.id
+        return render_template('sell.html')
+    else:
+        return redirect(url_for('login'))
+
+# @app.route('/photo/<id>')
+# def show(id):
+#     photo = Item.load(id)
+#     if photo is None:
+#         abort(404)
+#     #url = photos.url(photo.filename)
+#     #return render_template('welcome.html', url=url, photo=photo)
+#     return render_template(post=photo)
 
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
