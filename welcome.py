@@ -147,7 +147,7 @@ def login():
 @app.route('/home')
 def after_login():
     if g.user:
-
+        # sort data according to time. display 4 latest posts
         return render_template('welcome.html')
 
     return redirect(url_for('login'))
@@ -182,15 +182,6 @@ def post_item():
         return render_template('sell.html')
     else:
         return redirect(url_for('login'))
-
-# @app.route('/photo/<id>')
-# def show(id):
-#     photo = Item.load(id)
-#     if photo is None:
-#         abort(404)
-#     #url = photos.url(photo.filename)
-#     #return render_template('welcome.html', url=url, photo=photo)
-#     return render_template(post=photo)
 
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
