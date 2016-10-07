@@ -2,6 +2,31 @@
 <html>
 
   <head>
+
+<style>
+div.img {
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 280px;
+}
+
+div.img:hover {
+    border: 1px solid #777;
+}
+
+div.img img {
+    width: 100%;
+    height: auto;
+}
+
+div.desc {
+    padding: 15px;
+    text-align: center;
+}
+</style>
+
+
     <title>Welcome to DealBazaar</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,6 +35,7 @@
   </head>
 
   <body>
+  <p><span class = "blue"> <a href = "/sell">Sell item</a></span></p>
     <table>
       <tr>
         <td style= "width:30%;">
@@ -18,6 +44,17 @@
             <h1>Hi there!</h1>
           <p> Welcome to DealBazaar</p>
           <p>Rent, Buy and sell at the same place..</p>
+
+          {% for item in items %}
+          <h2>{{ item.name }}</h2>
+          <h2>{{ item.description }}</h2>
+          <h2>{{ item.original_price }}</h2>
+          <h2><div class="img">
+          <img class = 'item' src= {{ item.src }} width="800" height="300">
+          <div class="desc">{{ item.name }}</div>
+          </div></h2>
+          {%endfor%}
+
     </table>
   </body>
 
