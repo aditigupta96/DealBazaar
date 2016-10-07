@@ -1,26 +1,119 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <title>DEALBAZAAR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <head>
-    <title>Python Flask Starter Application</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="static/stylesheets/style.css">
-  </head>
+  <link rel="stylesheet" type="text/css" href="static/stylesheets/fonthome.css">
 
-  <body>
-    <table>
-      <tr>
-        <td style= "width:30%;">
-          <img class = "newappIcon" src="static/images/newapp-icon.png">
-        <td>
-            <h1>Hi there!</h1>
-          <p>Login here..!!!
-            <span class = "blue"> <a href = "/login">Login</a></span>.
+  <style>
+  ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      padding-top:5px;
+      background-color: #141414;
+      position: fixed;
+      top:0;
+      left:0;
+      width:100%;
+  }
 
-            <p>Signup <span class = "blue"> <a href = "/signup">signup</a></span>.</p>
-    </table>
-  </body>
+  li {
+      float: left;
+  }
 
+  li a {
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-family: comic;
+
+  }
+
+  li a:hover:not(.active) {
+      background-color: #F47832;
+      color:white;
+      font-weight: bold;
+  }
+
+  #sign
+  {
+    padding-right:2em;
+    color:white;
+  }
+
+  #login
+  {
+    padding-right:0.5em;
+    color:white;
+  }
+
+  #name
+{
+  position:absolute;
+  z-index:2000;
+  margin-left: 350%;
+  margin-top:150%;
+  
+}
+
+#heading
+{
+  position: absolute;
+  z-index: 2000;
+  margin-top: 180%; 
+  margin-left:435%;
+  top:5px;
+  color:white;
+  font-size:35px;
+  font-family:comic;
+  font-style: italic;
+  font-weight: bold;
+}
+
+#space1
+{
+  margin-top:10%;
+  margin-bottom: 10%;
+}
+
+#tagline
+{
+  color:white;
+  font-size: 18px;
+  font-family: comic;
+  font-style: italic;
+  margin-left:590%;
+  margin-top:230%;
+  position: relative; 
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="background">
+<img id="picture" src="static/images/picture.jpg" alt="background" width="1350" height="640">
+</div>
+
+<ul>
+<li style="float:right" id="sign"><a href="/signup">SIGN UP</a></li>
+<li style="float:right" id="login"><a href="/login">LOGIN</a></li>
+</ul>
+
+<div id="name">
+<img src="static/images/dblogo.png" alt="logo" width="80" height="80">
+</div>
+<div>
+<p id="heading">DealBazaar.com</p>
+<p id="space1"> </p>
+<p id="tagline">Buy.Sell.Rent.</p>
+</div> 
+
+</body>
 </html>
