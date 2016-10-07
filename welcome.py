@@ -14,19 +14,20 @@
 
 import os 
 import couchdb
+import uuid
 
 from flask import Flask, jsonify, session, render_template, request, redirect, g, url_for, flash
 # from .models import User
 from datetime import datetime
-from couchdb.mapping import Document, TextField, DateTimeField, ListField, FloatField, IntegerField
+from couchdb.mapping import Document, TextField, DateTimeField, ListField, FloatField, IntegerField, ViewField
 from werkzeug.utils import secure_filename
 from werkzeug import FileStorage
 from flask_uploads import (UploadSet, configure_uploads, IMAGES, UploadNotAllowed)
-import uuid
+# from cloudant.view import View
 
 
 
-UPLOADED_PHOTOS_DEST = 'uploads'
+# UPLOADED_PHOTOS_DEST = 'uploads'
 
 cloudant_data = {
     "username": "052ca863-0f20-49a8-9813-330b0813683a-bluemix",
@@ -35,17 +36,17 @@ cloudant_data = {
     "port": '443',
 }
 
-
+DATABASE_URL = "https://052ca863-0f20-49a8-9813-330b0813683a-bluemix.cloudant.com/bazaardata/"
 
 app = Flask(__name__)
 app.config.from_object(__name__)
-app.config.from_envvar('DEALBAZAAR_SETTINGS', silent=True)
+# app.config.from_envvar('DEALBAZAAR_SETTINGS', silent=True)
 app.secret_key = os.urandom(24)
 
 
 
-uploaded_photos = UploadSet('photos', IMAGES)
-configure_uploads(app, uploaded_photos)
+# uploaded_photos = UploadSet('photos', IMAGES)
+# configure_uploads(app, uploaded_photos)
 
 
 class User(Document):
@@ -61,7 +62,7 @@ class User(Document):
 
 
 class Item(Document):
-    doc_type = 'item'
+    doc_type = TextField(default='item')
     name = TextField()
     description = TextField()
     original_price = IntegerField()
@@ -69,9 +70,9 @@ class Item(Document):
     user = TextField()
     filename = TextField()
 
-    @property
-    def imgsrc(self):
-        return uploaded_photos.url(self.filename)
+    @classmethod
+    def all(cls,db):
+        return cls.view(db,'_design/items/_view/all-items')
 
 
 def get_db():
@@ -148,7 +149,14 @@ def login():
 def after_login():
     if g.user:
         # sort data according to time. display 4 latest posts
-        return render_template('welcome.html')
+        
+        db = get_db()
+        it = Item.all(db)
+
+        for i in it:
+            i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
+
+        return render_template('welcome.html', items = it)
 
     return redirect(url_for('login'))
 
@@ -166,16 +174,18 @@ def post_item():
             item.original_price = form_data.get('original_price',None)
             item.user = g.user.get('email', None)
             print request.files['photo']
-            try:
-                filename = uploaded_photos.save(photo)
-            except UploadNotAllowed:
-                flash("The upload was not allowed")
-            else:
-                item.filename = filename
-
+            print item.name
             db = get_db()
+            # try:
+            #     filename = uploaded_photos.save(photo)
+            # except UploadNotAllowed:
+            #     flash("The upload was not allowed")
+            # else:
+            #     item.filename = filename
+
             item.id = uuid.uuid4().hex
             item.store(db)
+            db.put_attachment(item,photo,filename=str(item.name)+'.jpg',content_type='image/jpeg')
 
             #return "Success...!!!"
             return item.id
