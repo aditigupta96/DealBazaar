@@ -1,61 +1,123 @@
 <!DOCTYPE html>
 <html>
+<head>
 
-  <head>
+  <title>HOMEPAGE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-div.img {
-    margin: 5px;
-    border: 1px solid #ccc;
-    float: left;
-    width: 280px;
+  <link rel="stylesheet" type="text/css" href="static/stylesheets/fonthome.css">
+  <style>
+  ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      padding-top:5px;
+      background-color: #141414;
+      position: fixed;
+      top:0;
+      left:0;
+      width:100%;
+  }
+
+  li {
+      float: left;
+  }
+
+  li a {
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-family: comic;
+
+  }
+
+  li a:hover:not(.active) {
+      background-color: #F47832;
+      color:white;
+      font-weight: bold;
+  }
+
+  #head
+  {
+    color:white;
+    display:inline;
+    font-family: comic;
+    font-weight: bold;
+    font-style:italic;
+    padding-right:24em;
+  }
+  #mycart
+  {
+    margin-top:18%;
+    padding-right:2em;
+  }
+  #logo
+  {
+    margin:auto;
+    margin-top:16%;
+    padding-right:1.5em;
+  }
+  #postitem
+  {
+    padding-right:10em;
+  }
+  #postitem:hover
+  {
+    background-color: #141414;
+  }
+
+  #search
+{
+    align:center;
+    width: 600px;
+    padding: 7px;
+    border: 1px solid #607d8b;
+}
+#sub
+{
+    padding: 7px;
+    background: #607d8b;
+    border: 1px solid #607d8b;
+    color: white;
+    margine-left : -5px;
+    cursor : pointer;
+}
+#sub:hover
+{
+    background: #333;
+    transition : all 0.40s;
 }
 
-div.img:hover {
-    border: 1px solid #777;
-}
+  </style>
+</head>
+<body>
 
-div.img img {
-    width: 100%;
-    height: auto;
-}
+<div class="background">
+<img id="picture" src="static/images/picture.jpg" alt="background" width="1350" height="640">
+</div>
 
-div.desc {
-    padding: 15px;
-    text-align: center;
-}
-</style>
+<ul>
+  <li><img src="static/images/dblogo.png" alt="logo" width="35" height="35"><p id="head">DealBazaar.com</p></li>
+  <center>
+  <li><a href="#">Home</a></li>
+  <li><a href="#">My Shelf</a></li>
+  <li><a href="#">My Purchase</a></li>
+  </center>
 
+  <li style="float:right"><img id="logo" src="static/images/logo.png" alt="Profile Picture" width="30" height="30"></li>
+  <li style="float:right"><img id="mycart" src="static/images/cart.png" alt="cart" width="30" height="30"></li>
+  <li style="float:right"><a id="postitem" href="/sell" target="_self"><button class="button">Sell An Item </button></a>
+</ul>
 
-    <title>Welcome to DealBazaar</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="static/stylesheets/style.css">
-  </head>
+<div style="width:800px; margin-top:35%; margin-left:45%; vertical-align:middle; ">
+<form action="www.google.com">
+  <input type="text" placeholder="Search .." maxlength="20" id="search">
+  <input type="submit" id ="sub" value="Go!">
+</form>    
+</div>
 
-  <body>
-  <p><span class = "blue"> <a href = "/sell">Sell item</a></span></p>
-    <table>
-      <tr>
-        <td style= "width:30%;">
-          <img class = "newappIcon" src="static/images/newapp-icon.png">
-        <td>
-            <h1>Hi there!</h1>
-          <p> Welcome to DealBazaar</p>
-          <p>Rent, Buy and sell at the same place..</p>
-
-          {% for item in items %}
-          <h2>{{ item.name }}</h2>
-          <h2>{{ item.description }}</h2>
-          <h2>{{ item.original_price }}</h2>
-          <h2><div class="img">
-          <img class = 'item' src= {{ item.src }} width="800" height="300">
-          <div class="desc">{{ item.name }}</div>
-          </div></h2>
-          {%endfor%}
-
-    </table>
-  </body>
-
+</body>
 </html>
