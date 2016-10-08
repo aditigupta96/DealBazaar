@@ -1,0 +1,72 @@
+#heading
+{
+	color:white;
+	font-family: comic;
+	font-weight: bold;
+	font-style: italic;
+	font-size:25px;
+}
+
+
+#block {
+	margin-top:160px;
+	margin-left:250px;
+    padding: 20px 20px 20px 2px;
+    width: 1000;
+    height: 750;
+    border:2px solid white;
+    border-radius: 10px 15px;
+    z-index:2000;
+    position:absolute;
+}
+
+#upload
+{
+	
+	margin-left:5%;
+	display:block;
+}
+
+.button1
+{
+    background-color: grey;
+    color: white;
+    font-weight: bold;
+    border: 2px solid #008CBA;
+    border-radius:2px;
+    padding: 10px 32px;
+    width:70%;
+    margin-left: 300px;
+    margin-top:200px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 12px 0;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+    z-index:2500;
+}
+
+.button1:hover {
+    background-color: #008CBA;
+    color: white;
+}
+
+#form
+{
+	margin:auto;
+	margin-left: 675%;
+	margin-top:177%;
+	width:100px;
+}
+
+p
+{
+	font-family:comic;
+	font-size:18px;
+	font-weight: bold;
+	color:white;
+
+}

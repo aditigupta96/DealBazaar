@@ -1,29 +1,138 @@
 <!DOCTYPE html>
 <html>
+<head>
 
-  <head>
-    <title>DealBazaar post item page</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="static/stylesheets/style.css">
-  </head>
+  <title>POST AN ITEM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <body>
-    <table>
-      <tr>
-        <td style= "width:30%;">
-          <img class = "newappIcon" src="static/images/newapp-icon.png">
-        <td>
-            <h1>Post items</h1>
-            <form method="POST" enctype="multipart/form-data" >
-                <p>Item image :<input type="file" name="photo"> </p>
-                <p>Item Name : <input type="text" name="item_name" ></p>
-                <p>Description : <input type="text" name="description"></p>
-                <p>Price : <input type="number" name="original_price"></p>
+  <link rel="stylesheet" type="text/css" href="static/stylesheets/fonthome.css">
+  <link rel="stylesheet" type="text/css" href="static/stylesheets/post.css">
+  <style type="text/css">
+  ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      padding-top:5px;
+      background-color: #141414;
+      position: fixed;
+      top:0;
+      left:0;
+      width:100%;
+  }
+
+  li {
+      float: left;
+  }
+
+  li a {
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-family: comic;
+
+  }
+
+  li a:hover:not(.active) {
+      background-color: #F47832;
+      color:white;
+      font-weight: bold;
+  }
+
+  #head
+  {
+    color:white;
+    display:inline;
+    font-family: comic;
+    font-weight: bold;
+    font-style:italic;
+    padding-right:10em;
+  }
+  #mycart
+  {
+    margin-top:18%;
+    padding-right:2em;
+  }
+  #logo
+  {
+    margin:auto;
+    margin-top:16%;
+    padding-right:1.5em;
+  }
+  #postitem
+  {
+    padding-right:6em;
+  }
+  #postitem:hover
+  {
+    background-color: #141414;
+  }
+
+    #search
+{
+    align:center;
+    width: 200px;
+    padding: 7px;
+    margin-top: 4%;
+    border: 1px solid #607d8b;
+
+}
+#sub
+{
+    padding: 7px;
+    background: #607d8b;
+    border: 1px solid #607d8b;
+    color: white;
+    margin-left : -5px;
+    padding-right:1em;
+    cursor : pointer;
+}
+#sub:hover
+{
+    background: #333;
+    transition : all 0.40s;
+}
+  </style>
+</style>
+</head>
+
+<body>
+<div class="background">
+<img id="picture" src="static/images/picture.jpg" alt="background" width="1350" height="640">
+</div>
+
+<ul>
+  <li><img src="static/images/dblogo.png" alt="logo" width="35" height="35"><p id="head">DealBazaar.com</p></li>
+  <center>
+  <li><a href="#">Home</a></li>
+  <li><a href="#">My Shelf</a></li>
+  <li><a href="#">My Purchase</a></li>
+  </center>
+
+  <li style="float:right"><img id="logo" src="static/images/logo.png" alt="Profile Picture" width="30" height="30"></li>
+  <li style="float:right"><img id="mycart" src="static/images/cart.png" alt="cart" width="30" height="30"></li>
+  <li style="float:right"><a id="postitem" href="/sell" target="_self"><button class="button">Sell An Item </button></a></li>
+  <li style="float:right"><span id="bar"><form action="#view.htm">
+              <input type="text" placeholder="Search .." maxlength="20" id="search">
+              <input type="submit" id ="sub" value="Go!">
+            </form></span></li>
+</ul>
+
+<div id="block">
+<center>
+ <img id="upload" src="static/images/upload.png" alt="picture" width="150" height="200"> 
+</center>
+</div>
+<div id="form">
+<form method="POST" enctype="multipart/form-data" >
+        <span><p>Item image :<input type="file" name="photo" title="Browse"> </p></span>
+                <p>Item Name :<span> <input type="text" name="item_name" ></span></p>
+                <p>Description :<span> <input type="text" name="description"></span></p>
+                <p>Price :<span><input type="number" name="original_price"></span></p>
                 <p><input type="submit"></p>
             </form>
-    </table>
-  </body>
-
+</div>
+</body>
 </html>
