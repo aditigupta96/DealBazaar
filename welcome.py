@@ -188,7 +188,7 @@ def post_item():
             db.put_attachment(item,photo,filename=str(item.name)+'.jpg',content_type='image/jpeg')
 
             #return "Success...!!!"
-            return item.id
+            return redirect(url_for('after_login'))
         return render_template('sell.html')
     else:
         return redirect(url_for('login'))
