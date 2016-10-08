@@ -193,6 +193,10 @@ def post_item():
     else:
         return redirect(url_for('login'))
 
+@app.route('/view')
+def view():
+    return render_template('view.html')
+
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=int(port), debug=True)
