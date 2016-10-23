@@ -64,8 +64,9 @@ class User(Document):
 class Item(Document):
     doc_type = TextField(default='item')
     name = TextField()
+    item_type = TextField()
     description = TextField()
-    original_price = IntegerField()
+    original_price = FloatField()
     date = DateTimeField(default=datetime.now)
     user = TextField()
     filename = TextField()
@@ -73,6 +74,59 @@ class Item(Document):
     @classmethod
     def all(cls,db):
         return cls.view(db,'_design/items/_view/all-items')
+
+    @classmethod
+    def by_date(cls,db):
+        item_obj = cls.view(
+                            db,
+                            '_design/items/_view/byDate',
+                            descending=True,
+                            include_docs=True
+                            )
+        for item in item_obj:
+            print item
+
+    @classmethod
+    def get_item(cls,id):
+        db = get_db()
+        item = db.get(id,None)
+
+        if item is None:
+            return None
+        
+        return cls.wrap(item)
+
+
+class Bid(Document):
+    doc_type = TextField(default='bid')
+    amount = FloatField()
+    user = TextField()
+    item = TextField()
+    created = DateTimeField()
+
+    @classmethod
+    def get_bid(cls,id):
+        db = get_db()
+        bid = db.get(id,None)
+
+        if bid is None:
+            return None
+        
+        return cls.wrap(bid)
+    
+    @classmethod
+    def get_by_item(cls,db,item_id):
+        # print '_design/bids/_view/get-bids'+item_id
+        bids = []
+        bids_obj = cls.view(
+                            db,
+                            '_design/bids/_view/get-bids',
+                            key=item_id,
+                            include_docs=True
+                            )
+        for row in bids_obj:
+            bids.append(cls.wrap(row))
+        return bids
 
 
 def get_db():
@@ -148,15 +202,7 @@ def login():
 @app.route('/home')
 def after_login():
     if g.user:
-        # sort data according to time. display 4 latest posts
-        
-        db = get_db()
-        it = Item.all(db)
-
-        for i in it:
-            i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
-
-        return render_template('welcome.html', items = it)
+        return render_template('welcome.html')
 
     return redirect(url_for('login'))
 
@@ -173,8 +219,8 @@ def post_item():
             item.description = form_data.get('description',None)
             item.original_price = form_data.get('original_price',None)
             item.user = g.user.get('email', None)
-            print request.files['photo']
-            print item.name
+            item.date = datetime.now
+
             db = get_db()
             # try:
             #     filename = uploaded_photos.save(photo)
@@ -193,9 +239,55 @@ def post_item():
     else:
         return redirect(url_for('login'))
 
-@app.route('/view')
+@app.route('/view/')
 def view():
-    return render_template('view.html')
+    if g.user:
+        db = get_db()
+        it = Item.all(db)
+
+        for i in it:
+            #i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
+            i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
+            print i.src
+
+        return render_template('view.html', items = it)
+
+    return redirect(url_for('login'))
+
+@app.route('/view/<id>', methods=['GET', 'POST'])
+def item_details(id=None):
+    if request.method == 'POST':
+        bid = Bid()
+
+        bid.amount = request.form.get('amount')
+        bid.item = id
+        bid.user = g.user['email']
+
+        db = get_db()
+        bid.id = uuid.uuid4().hex
+        bid.store(db)
+
+        return redirect('/view/'+id)
+    else:
+        if(id):
+            db = get_db()
+            item = Item.get_item(id)
+            
+            items = item._data
+            src = DATABASE_URL + id + '/' + item.name + '.jpg/'
+            
+            return render_template('description.html', item = items,src=src)
+
+@app.route('/view/<id>/bid')
+def view_bids(id=None):
+    if g.user:
+        db = get_db()
+        print Bid.get_by_item(db,id)
+        print 
+        print Item.by_date(db)
+        return "Hello"
+        # return render_template('view_bid.html')
+
 
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":

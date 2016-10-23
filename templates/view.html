@@ -4,8 +4,8 @@
 	<title>SEARCH</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-	<link rel="stylesheet" type="text/css" href="static/stylesheets/fonthome.css">
-	<link rel="stylesheet" type="text/css" href="static/stylesheets/view.css">
+	<link rel="stylesheet" type="text/css" href="/static/stylesheets/fonthome.css">
+	<link rel="stylesheet" type="text/css" href="/static/stylesheets/view.css">
 	<style>
 	ul {
     	list-style-type: none;
@@ -99,19 +99,19 @@
 <body>
 
 <div class="background">
-<img id="picture" src="static/images/picture.jpg" alt="background" width="1350" height="640">
+<img id="picture" src="/static/images/picture.jpg" alt="background" width="1350" height="640">
 </div>
 
 <ul>
-  <li><img src="static/images/dblogo.png" alt="logo" width="35" height="35"><p id="head">DealBazaar.com</p></li>
+  <li><img src="/static/images/dblogo.png" alt="logo" width="35" height="35"><p id="head">DealBazaar.com</p></li>
   <center>
   <li><a href="#">Home</a></li>
   <li><a href="#">My Shelf</a></li>
   <li><a href="#">My Purchase</a></li>
   </center>
 
-  <li style="float:right"><img id="logo" src="static/images/logo.png" alt="Profile Picture" width="30" height="30"></li>
-  <li style="float:right"><img id="mycart" src="static/images/cart.png" alt="cart" width="30" height="30"></li>
+  <li style="float:right"><img id="logo" src="/static/images/logo.png" alt="Profile Picture" width="30" height="30"></li>
+  <li style="float:right"><img id="mycart" src="/static/images/cart.png" alt="cart" width="30" height="30"></li>
   <li style="float:right"><a id="postitem" href="/sell" target="_self"><button class="button">Sell An Item </button></a></li>
   <li style="float:right"><span id="bar"><form action="#view.html">
 							<input type="text" placeholder="Search .." maxlength="20" id="search">
@@ -120,7 +120,7 @@
 </ul>
 <div id="block">
 <center>
- <img id="book1" src="static/images/book1.jpg" alt="dsa" width="150" height="200"> 
+ <img id="book1" src="/static/images/book1.jpg" alt="dsa" width="150" height="200"> 
 </center>
 <p id="name">Data Structures and Algorithms </p>
 <p id="price">Rs. 1250 </p>
@@ -128,7 +128,7 @@
 
 <div id="block1">
 <center>
- <img id="book1" src="static/images/book2.jpg" alt="dsa" width="150" height="200"> 
+ <img id="book1" src="/static/images/book2.jpg" alt="dsa" width="150" height="200"> 
 </center>
 <p id="name"> &nbsp Big Book of Home Cooking </p>
 <p id="price">Rs. 800 </p>
@@ -136,11 +136,22 @@
 
 <div id="block2">
 <center>
- <img id="book1" src="static/images/book3.jpg" alt="dsa" width="150" height="200"> 
+ <img id="book1" src="/static/images/book3.jpg" alt="dsa" width="150" height="200"> 
 </center>
 <p id="name">Software Engineering </p>
 <p id="price">Rs. 1500 </p>
 </div>
 
+<!-- {% for i in items %}
+<p>{{i.id}}</p>
+	<div id="block">
+	<center>
+	 <img id="book1" src="{{i.src}}" alt="dsa" width="150" height="200"> 
+	</center>
+	<p id="name"> &nbsp {{i.name}} </p>
+	<p id="price">Rs. {{i.original_price}} </p>
+	</div>
+{% endfor %}
+ -->
 </body>
 </html>
