@@ -163,12 +163,10 @@
                     
                     <div class="card-block">
                         
-                        <h4 class="card-title" align="center">{{item.name}}</h4>
-                        
+                        <h4 class="card-title" align="center">Category : {{item.item_type}}</h4> 
+                        <br>
 
-                        
-                        <a href="#" class="btn btn-primary flex-center">Base Price : Rs. {{item.original_price}}</a>
-                        <!-- <a href="#" class="btn btn-secondary flex-center">Max Bid Price : 15 $</a> -->
+                         
                         
                     </div>
                     
@@ -178,109 +176,94 @@
                 
             </div>
 
-        <h3 align="center"> <u>Bidders On This Product</u></h3>
-        <br><br>
+        
+        <div class="row">
 
-        <div class = "row">
+            <div class="col-md-6">
+                <!--Card-->
+                <div class="card">
 
-  {% for bid in bids %}
-   <div class = "col-sm-6 col-md-3">
-      <div class = "thumbnail">
-         <img src = "/static/images/Steve Jobs.png" alt = "Generic placeholder thumbnail" width="100" height="100">
-      </div>
-      
-      <div class = "caption">
-         <h3>{{bid.user}}</h3>
-         
-         
-         <p>
-            <a href = "#" class = "btn btn-success" role = "button">
-               BID : Rs. {{bid.amount}}
-            </a> 
-            
-            <a href = "#" class = "btn btn-danger" role = "button">
-               Accept
-            </a>
-         </p>
-         
-      </div>
-   </div>
-   {% endfor %}
-   <!-- <div class = "col-sm-6 col-md-3">
-      <div class = "thumbnail">
-         <img src = "/static/images/Steve Jobs.png" alt = "Generic placeholder thumbnail" width="100" height="100">
-      </div>
-      
-      <div class = "caption">
-         <h3>Amit Shukla</h3>
-         
-         <p>
-            <a href = "#" class = "btn btn-success" role = "button">
-               BID : 12 $
-            </a> 
-            
-            <a href = "#" class = "btn btn-danger" role = "button">
-               Accept
-            </a>
-         </p>
-         
-      </div>
-   </div>
+                    
    
-   <div class = "col-sm-6 col-md-3">
-      <div class = "thumbnail">
-         <img src = "/static/images/Steve Jobs.png" alt = "Generic placeholder thumbnail" width="100" height="100">
-      </div>
-      
-      <div class = "caption">
-         <h3>Amit Shukla</h3>
-         
-         
-         <p>
-            <a href = "#" class = "btn btn-success" role = "button">
-               BID : 12 $
-            </a> 
-            
-            <a href = "#" class = "btn btn-danger" role = "button">
-               Accept
-            </a>
-         </p>
-         
-      </div>
-   </div>
-   
-   <div class = "col-sm-6 col-md-3">
-      <div class = "thumbnail">
-         <img src = "/static/images/Steve Jobs.png" alt = "Generic placeholder thumbnail" width="100" height="100">
-      </div>
-      
-      <div class = "caption">
-         <h3>Amit Shukla</h3>
-         
-         
-          <p>
-            <a href = "#" class = "btn btn-success" role = "button">
-               BID : 12 $
-            </a> 
-            
-            <a href = "#" class = "btn btn-danger" role = "button">
-               Accept
-            </a>
-         </p>
-         
-      </div>
-   </div>
-   
+<div class="card-block">
+  <div class="form-group">
+    <label class="control-label col-sm-2" ></label>
+    <div class="col-sm-10">
+      <h4><b>Product Name : </b>{{item.name}}</h4>
+    </div>
+  </div>
+  </div>
+  <div class="card-block">
+  <div class="form-group">
+    <label class="control-label col-sm-2" ></label>
+    <div class="col-sm-10">
+      <h4><b>Description : </b>{{item.description}}</h4>
+    </div>
+  </div>
+  </div>
+  <div class="card-block">
+  <div class="form-group">
+    <label class="control-label col-sm-2" ></label>
+    <div class="col-sm-10">
+      <h4><b>Price : </b>{{item.original_price}}</h4>
+    </div>
+  </div>
+  </div>
+  <!-- <div class="form-group">
+    <label class="control-label col-sm-2" ></label>
+    <div class="col-sm-10">
+      <input type="number" name="original_price" class="form-control"  placeholder="Price">
+    </div>
+  </div> -->
+
+
+  <!-- <div class="form-group">
+    <label class="control-label col-sm-2" for="pwd"></label>
+    <div class="col-sm-10"> 
+      <input type="password" class="form-control" id="pwd" placeholder="Enter password">
+    </div>
+  </div> -->
+  
+  <!-- <div class="form-group">
+       <label class="control-label col-sm-2" ></label>
+       <div class="col-sm-4">
+           <h5>Upload Image :</h5>
+       </div>
+       <div class=" col-sm-5">
+       <label class = "btn btn-default btn-file" style="width:100%">
+            Browse <input type="file" name="photo" style="display: none;">
+        </label>
+        </div>
+  </div> -->
+                    
+                 <div class="card-block">
+                        
+                        
+<form class="form-horizontal" method="POST" enctype="multipart/form-data">
+
+  <div class="form-group">
+       <label class="control-label col-sm-2" ></label>
+
+    <div class="col-sm-10">
+      <input type="number" name="amount" placeholder="BID" class="form-control">
+    </div>
+
+       <label class = "btn btn-warning col-sm-12">
+       <div >
+            Bid<input type="submit" value="Bid" style="display: none;">
+        </div>
+        </label>
+  </div>
+                        
+                        <!-- <a href="#" class="btn btn-warning flex-center" >POST THE ITEM</a> -->
+                        
+                    </div>
+                    </form>
+
+                </div>
 </div>
- -->
+</div>
                 
-            
-
-            
-            
-            
-            
-   
    
 </body>
 

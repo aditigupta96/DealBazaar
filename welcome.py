@@ -60,6 +60,15 @@ class User(Document):
     address = TextField()
     createdate = DateTimeField(default=datetime.now)
 
+    @classmethod
+    def get_user(cls,email):
+        db = get_db()
+        user = db.get(email,None)
+
+        if user is None:
+            return None
+        
+        return cls.wrap(user)
 
 class Item(Document):
     doc_type = TextField(default='item')
@@ -76,15 +85,36 @@ class Item(Document):
         return cls.view(db,'_design/items/_view/all-items')
 
     @classmethod
-    def by_date(cls,db):
+    def by_date(cls,limit = None):
+        db = get_db()
         item_obj = cls.view(
                             db,
                             '_design/items/_view/byDate',
                             descending=True,
                             include_docs=True
                             )
+        items = []
         for item in item_obj:
-            print item
+            items.append(cls.wrap(item))
+
+        if limit is not None:
+            return items[0:limit]
+
+        return items
+    
+    @classmethod
+    def by_user(cls):
+        db = get_db()
+        item_obj = cls.view(
+                            db,
+                            '_design/items/_view/byUser',
+                            include_docs=True
+                            )
+        items = []
+        for item in item_obj:
+            items.append(cls.wrap(item))
+
+        return items
 
     @classmethod
     def get_item(cls,id):
@@ -202,7 +232,15 @@ def login():
 @app.route('/home')
 def after_login():
     if g.user:
-        return render_template('welcome.html')
+        recent_items = Item.by_date(3)
+
+        for i in recent_items:
+            i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
+
+        user_items = Item.by_user()
+        #print user_items
+        
+        return render_template('home.html', recent_items = recent_items)
 
     return redirect(url_for('login'))
 
@@ -217,9 +255,10 @@ def post_item():
             photo = request.files.get('photo')
             item.name = form_data.get('item_name',None)
             item.description = form_data.get('description',None)
+            item.item_type = form_data.get('item_type', None)
             item.original_price = form_data.get('original_price',None)
             item.user = g.user.get('email', None)
-            item.date = datetime.now
+            #item.date = datetime.datetime.now
 
             db = get_db()
             # try:
@@ -235,7 +274,7 @@ def post_item():
 
             #return "Success...!!!"
             return redirect(url_for('after_login'))
-        return render_template('sell.html')
+        return render_template('upload.html')
     else:
         return redirect(url_for('login'))
 
@@ -250,7 +289,7 @@ def view():
             i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
             print i.src
 
-        return render_template('view.html', items = it)
+        return render_template('search.html', items = it)
 
     return redirect(url_for('login'))
 
@@ -276,18 +315,23 @@ def item_details(id=None):
             items = item._data
             src = DATABASE_URL + id + '/' + item.name + '.jpg/'
             
-            return render_template('description.html', item = items,src=src)
+            return render_template('item_description.html', item = items,src=src)
 
 @app.route('/view/<id>/bid')
 def view_bids(id=None):
     if g.user:
         db = get_db()
-        print Bid.get_by_item(db,id)
+        bids = Bid.get_by_item(db,id)
         print 
-        print Item.by_date(db)
-        return "Hello"
-        # return render_template('view_bid.html')
+    
+        item = Item.get_item(id)
+            
+        items = item._data
+        src = DATABASE_URL + id + '/' + item.name + '.jpg/'
 
+        return render_template('view_bid.html',bids=bids,src=src,item=items)
+    else:
+        return redirect(url_for('login'))
 
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
