@@ -253,13 +253,6 @@ def after_login():
         for i in recent_items:
             i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
 
-        
-        #print user_items
-        
-        # if request.method == 'POST':
-        #     item_type = request.form.get('search')
-        #     item_type_filter = Item.by_item_type(item_type)
-        #     print item_type_filter
 
         return render_template('home.html', recent_items = recent_items)
 
@@ -272,7 +265,7 @@ def posted_items():
 
         for i in user_items:
             i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
-            print i.src
+            #print i.src
             
         return render_template('posted_items.html', user_items = user_items)
 
@@ -312,19 +305,30 @@ def post_item():
     else:
         return redirect(url_for('login'))
 
-@app.route('/view/')
+@app.route('/view/', methods=['GET', 'POST'])
 def view():
     if g.user:
-        db = get_db()
-        it = Item.all(db)
+        if request.method == 'POST':
+            item_type = request.form.get('search')
+            print item_type
 
-        for i in it:
-            #i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
-            i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
-            print i.src
+            item_type_filter = Item.by_item_type(item_type)
 
-        return render_template('search.html', items = it)
+            for i in item_type_filter:
+                i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
 
+            return render_template('search.html', items = item_type_filter)
+    
+        else:    
+            db = get_db()
+            it = Item.all(db)
+
+            for i in it:
+                i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
+                #print i.src
+
+            return render_template('search.html', items = it)
+    
     return redirect(url_for('login'))
 
 @app.route('/view/<id>', methods=['GET', 'POST'])
