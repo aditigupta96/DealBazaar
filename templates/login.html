@@ -1,59 +1,218 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-  
-  <script type="text/javascript">
-        $('input:text').click(
-      function()
-      {
-          $(this).val('');
-      });
 
-      $('input:Password').click(
-      function()
-      {
-          $(this).val('');
-      });
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>Home - DealBazaar</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
+
+    <!-- Bootstrap core CSS -->
+    <link href="static/stylesheets/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Material Design Bootstrap -->
+    <link href="static/stylesheets/mdb.min.css" rel="stylesheet">
+
+    <link href="static/stylesheets/style1.css" rel="stylesheet">
+
+    <!-- Template styles -->
+    <style rel="stylesheet">
+        /* TEMPLATE STYLES */
+        /* Necessary for full page carousel*/
+        
+        html,
+        body {
+            background-color: #f6f6f6;
+            height: 100%;
+        }
+        /* Navigation*/
+        
+        .navbar {
+            background-color: black;
+            opacity: 0.8;
+
+        }
+        
+        .top-nav-collapse {
+            background-color: black;
+        }
+        
+        footer.page-footer {
+            background-color: #4285F4;
+        }
+        
+        @media only screen and (max-width: 768px) {
+            .navbar {
+                background-color: #4285F4;
+            }
+        }
+        /* Carousel*/
+        
+        .carousel {
+            height: 100%;
+        }
+        
+        @media (max-width: 776px) {
+            .carousel {
+                height: 100%;
+            }
+        }
+        
+        .carousel-item,
+        .active {
+            height: 100%;
+        }
+        
+        .carousel-inner {
+            height: 100%;
+        }
+        
+        .carousel-item:nth-child(1) {
+            background-image: url("static/images/8.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            opacity: 0.4;
+        }
+        
+        .carousel-item:nth-child(2) {
+            background-image: url("static/images/7.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .carousel-item:nth-child(3) {
+            background-image: url("static/images/9.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        /*Caption*/
+        
+        .flex-center {
+            color: #fff;
+        }
+
+        .navbar-nav li {
+            float: left;
+            font-size: 12px;
+
+        }
+
+        .navbar-nav ul {
+
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
 
 
-    </script>
 
-  <title>DEALBAZAAR</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+.navbar-nav li a, .dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 7px 16px;
+    text-decoration: none;
+}
 
-  <link rel="stylesheet" type="text/css" href="static/stylesheets/font.css">
+.navbar-nav li a:hover, .dropdown:hover .dropbtn {
+    background-color: #FF6E15;
+    width:130px;
+    text-align: left;
+}
+
+.navbar-nav li.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    font-size: 12px ;
+    display: none;
+    position: absolute;
+    background-color: #000000;
+    min-width: 130px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+#searchFieldText:focus {
+    color: #FFFFFF;
+}
+    </style>
+
 </head>
 
-
 <body>
-    <div class="background">
-      <img id="picture" src="static/images/picture.jpg" alt="background" width="1350" height="640">
+
+
+    
+ 
+    <div id="carousel-example-1" class="carousel slide carousel-fade" data-ride="carousel">
+     
+        <ol class="carousel-indicators">
+            <li data-target="#carousel-example-1" data-slide-to="0" class="active"></li>
+            <li data-target="#carousel-example-1" data-slide-to="1"></li>
+            <li data-target="#carousel-example-1" data-slide-to="2"></li>
+        </ol>
+      
+        <div class="carousel-inner" role="listbox">
+
+         
+            <div class="carousel-item active">
+             
+                <div class="flex-center animated fadeInDown">
+                    <ul>
+                        <li>
+                            <h1 class="h1-responsive">DealBazzar.com | One Stop Solution</h1></li>
+                        <li>
+                            <p>Get The Things You Need From Closest Places</p>
+                        </li>
+                        <li>
+                            <form id="form" method="post">
+                            <center>
+                            <input type="email" name="email" id="searchFieldText" placeholder="Email Id"><br>
+                            <br>
+                            <input type="Password" name="password" id="searchFieldText" placeholder="Password"><br>
+                            <br>
+                            <input type="submit" value="LOG IN" class="btn btn-default btn-lg" ><br>
+                            </center>
+                          </form>
+                        </li>
+                        <li>
+                            <a target="_self" href="/signup" class="btn btn-default btn-lg">Join us Today</a>
+                        </li>
+                    </ul>
+                </div>
+            
+            </div>
+           
+           
+           
+            
+        </div>
+       
+        
+    
     </div>
 
-    <div id="name">
-      <img src="static/images/dblogo.png" alt="Profile Picture" width="70" height="70">
-      <p id="heading">DealBazaar.com</p>
-      <p id="space1"> </p>
-      <p id="tagline">Buy.Sell.Rent.</p>
-    </div> 
-
-    <div id="login">
-      <img id="logo" src="static/images/logo.png" alt="Profile Picture" width="85" height="85">
-      <p id="space"> </p>
-      <form id="form" method="post">
-        <center>
-        <input type="email" name="email" placeholder="Email Id"><br>
-        <br>
-        <input type="Password" name="password" placeholder="Password"><br>
-        <br>
-        <input type="submit" value="LOG IN" stlye="font-weight:bold" ><br>
-        </center>
-      </form>
-  
-      <center>
-        <a href="/signup" target="_self"> <button class="button">JOIN US TODAY</button> </a>
-      </center>
-    </div>
-
-</body>
-</html>
+    </body>
+    </html>

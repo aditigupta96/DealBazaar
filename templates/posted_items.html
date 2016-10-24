@@ -7,16 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-    <title>DealBazaar.com</title>
+    <title>Material Design Bootstrap</title>
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
 
     <!-- Bootstrap core CSS -->
-    <link href="/static/stylesheets/bootstrap.min.css" rel="stylesheet">
+    <link href="static/stylesheets/bootstrap.min.css" rel="stylesheet">
 
     <!-- Material Design Bootstrap -->
-    <link href="/static/stylesheets/mdb.min.css" rel="stylesheet">
+    <link href="static/stylesheets/mdb.min.css" rel="stylesheet">
 
     <!-- Template styles -->
     <style rel="stylesheet">
@@ -49,9 +49,10 @@
                 background-color: #4285F4;
             }
         }
-        /* Carousel*/
         
-        .carousel {
+        
+        .carousel 
+        {
             height: 50%;
         }
         
@@ -93,6 +94,64 @@
         .flex-center {
             color: #fff;
         }
+
+        .navbar-nav li {
+            float: left;
+            font-size: 12px;
+
+        }
+
+        .navbar-nav ul {
+
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+
+
+.navbar-nav li a, .dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 7px 16px;
+    text-decoration: none;
+}
+
+.navbar-nav li a:hover, .dropdown:hover .dropbtn {
+    background-color: #FF6E15;
+    width:130px;
+    text-align: left;
+}
+
+.navbar-nav li.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    font-size: 12px ;
+    display: none;
+    position: absolute;
+    background-color: #000000;
+    min-width: 130px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
     </style>
 
 </head>
@@ -119,7 +178,7 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="/home">HOME <span class="sr-only">(current)</span></a>
                     </li>
-                   <li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link" href="#">MY SHELF</a>
                         
                     </li>
@@ -140,23 +199,28 @@
 
     </nav>
  
-    
+    <br>
+    <br>
+    <br>
+    <br>
    
     
     
-   <br>
-   <br>
-   <br>
-   <br>
+    <div>
+    <h4 align="center">Previously Added Items</h4>  
+
+    <br />
+   
     <div class="container">
         <div class="row">
 
-            <div class="col-md-6">
+        {% for item in user_items %}
+            <div class="col-md-3">
                 <!--Card-->
                 <div class="card">
 
                     <div class="view overlay hm-white-slight">
-                        <img src="{{src}}" class="img-fluid" alt="">
+                        <img src="{{item.src}}" class="img-fluid" alt="">
                         <a href="#">
                             <div class="mask"></div>
                         </a>
@@ -164,130 +228,74 @@
                     
                     <div class="card-block">
                         
-                        <h4 class="card-title" align="center">{{item.name}}</h4>
+                        <h4 class="card-title">{{item.name}}</h4>
                         
-
-                        
-                        <a href="#" class="btn btn-primary flex-center">Base Price : Rs. {{item.original_price}}</a>
-                        <!-- <a href="#" class="btn btn-secondary flex-center">Max Bid Price : 15 $</a> -->
-                        
+                        <a href="#" class="btn btn-danger">Rs. {{item.original_price}} </a>
+                        <a href="/view/{{item.id}}/bid" class="btn btn-warning">View Bids</a>
                     </div>
                     
 
                 </div>
-
                 
             </div>
+        {% endfor %}    
+        </div>
+    </div>
 
-        <h3 align="center"> <u>Bidders On This Product</u></h3>
-        <br><br>
+    <div class="add_item"><br />
+       <a href="/sell"> <img src="static/images/add_icon.png" style="width:70px; height:70px; margin-left:47%; padding:2px" /><h4 align="center">Add  Items</h4> </a>
+    </div>
 
-        <div class = "row">
-{%if bids|length > 0%}
-  {% for bid in bids %}
-   <div class = "col-sm-6 col-md-3">
-      <div class = "thumbnail">
-         <img src = "/static/images/Steve Jobs.png" alt = "Generic placeholder thumbnail" width="100" height="100">
-      </div>
-      
-      <div class = "caption">
-         <h3>{{bid.user}}</h3>
-         
-         
-         <p>
-            <a href = "#" class = "btn btn-success" role = "button">
-               BID : Rs. {{bid.amount}}
-            </a> 
-            
-            <a href = "#" class = "btn btn-danger" role = "button">
-               Accept
-            </a>
-         </p>
-         
-      </div>
-   </div>
-   {% endfor %}
-{% else %}
-        <h4 align="center"> There are currently no bidders for this product.</h4>
+   
+    <footer class="page-footer center-on-small-only">
+
         
-{% endif %}
-   <!-- <div class = "col-sm-6 col-md-3">
-      <div class = "thumbnail">
-         <img src = "/static/images/Steve Jobs.png" alt = "Generic placeholder thumbnail" width="100" height="100">
-      </div>
-      
-      <div class = "caption">
-         <h3>Amit Shukla</h3>
-         
-         <p>
-            <a href = "#" class = "btn btn-success" role = "button">
-               BID : 12 $
-            </a> 
-            
-            <a href = "#" class = "btn btn-danger" role = "button">
-               Accept
-            </a>
-         </p>
-         
-      </div>
-   </div>
-   
-   <div class = "col-sm-6 col-md-3">
-      <div class = "thumbnail">
-         <img src = "/static/images/Steve Jobs.png" alt = "Generic placeholder thumbnail" width="100" height="100">
-      </div>
-      
-      <div class = "caption">
-         <h3>Amit Shukla</h3>
-         
-         
-         <p>
-            <a href = "#" class = "btn btn-success" role = "button">
-               BID : 12 $
-            </a> 
-            
-            <a href = "#" class = "btn btn-danger" role = "button">
-               Accept
-            </a>
-         </p>
-         
-      </div>
-   </div>
-   
-   <div class = "col-sm-6 col-md-3">
-      <div class = "thumbnail">
-         <img src = "/static/images/Steve Jobs.png" alt = "Generic placeholder thumbnail" width="100" height="100">
-      </div>
-      
-      <div class = "caption">
-         <h3>Amit Shukla</h3>
-         
-         
-          <p>
-            <a href = "#" class = "btn btn-success" role = "button">
-               BID : 12 $
-            </a> 
-            
-            <a href = "#" class = "btn btn-danger" role = "button">
-               Accept
-            </a>
-         </p>
-         
-      </div>
-   </div>
-}
-   
-</div>
- -->
-                
-            
+        <div class="container-fluid">
+            <div class="row">
 
+                
+
+                
+
+            </div>
+        </div>
+        
+
+        <hr>
+
+        
+        <div class="call-to-action">
+            <h4>DealBazzar.com | One Stop Shopping  </h4>
             
-            
-            
-            
-   
-   
+        </div>
+        
+
+        
+        <div class="footer-copyright">
+            <div class="container-fluid">
+                © 2016 Copyright: <a href="#"> Visit : DealBazzar.com </a>
+
+            </div>
+        </div>
+        
+
+    </footer>
+    
+
+
+    
+    <script type="text/javascript" src="static/js/jquery-2.2.3.min.js"></script>
+
+    
+    <script type="text/javascript" src="static/js/tether.min.js"></script>
+
+    
+    <script type="text/javascript" src="static/js/bootstrap.min.js"></script>
+
+    
+    <script type="text/javascript" src="static/js/mdb.min.js"></script>
+
+
 </body>
 
 </html>

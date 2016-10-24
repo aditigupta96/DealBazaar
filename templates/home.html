@@ -182,7 +182,7 @@
                     <li class="dropdown">
     <a href="#" class="dropbtn">MY SHELF</a>
     <div class="dropdown-content">
-      <a href="#">On Bids</a><br />
+      <a href="/posted_items">On Bids</a><br />
       <a href="#">Sold Items</a>
       
     </div>
@@ -194,7 +194,7 @@
                 </ul>
                 <!--Search form-->
                 <form class="form-inline" action={{ url_for('view') }}>
-                    <input class="form-control" type="text" placeholder="Search For Items">
+                    <input class="form-control" type="text" name='search' placeholder="Search For Items">
                     <input type="submit" id ="sub" value="Go!">
                 </form>
             </div>
@@ -226,7 +226,7 @@
                         </li>
                         <li>
                             <!-- <a target="_blank" href="http://mdbootstrap.com/getting-started/" class="btn btn-primary btn-lg">Post An Item</a> -->
-                            <a target="_self" href="#" class="btn btn-default btn-lg">Rent Or Buy Items</a>
+                            <a target="_self" href="/view" class="btn btn-default btn-lg">Rent Or Buy Items</a>
                         </li>
                     </ul>
                 </div>

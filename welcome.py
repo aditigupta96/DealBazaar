@@ -103,11 +103,27 @@ class Item(Document):
         return items
     
     @classmethod
-    def by_user(cls):
+    def by_user(cls,email):
         db = get_db()
         item_obj = cls.view(
                             db,
                             '_design/items/_view/byUser',
+                            key=email,
+                            include_docs=True
+                            )
+        items = []
+        for item in item_obj:
+            items.append(cls.wrap(item))
+
+        return items
+
+    @classmethod
+    def by_item_type(cls,item_type):
+        db = get_db()
+        item_obj = cls.view(
+                            db,
+                            '_design/items/_view/byItemType',
+                            key=item_type,
                             include_docs=True
                             )
         items = []
@@ -237,10 +253,28 @@ def after_login():
         for i in recent_items:
             i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
 
-        user_items = Item.by_user()
+        
         #print user_items
         
+        # if request.method == 'POST':
+        #     item_type = request.form.get('search')
+        #     item_type_filter = Item.by_item_type(item_type)
+        #     print item_type_filter
+
         return render_template('home.html', recent_items = recent_items)
+
+    return redirect(url_for('login'))
+
+@app.route('/posted_items')
+def posted_items():
+    if g.user:
+        user_items = Item.by_user(g.user['email'])
+
+        for i in user_items:
+            i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
+            print i.src
+            
+        return render_template('posted_items.html', user_items = user_items)
 
     return redirect(url_for('login'))
 
