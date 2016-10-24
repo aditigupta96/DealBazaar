@@ -129,9 +129,9 @@
                     
                 </ul>
                 <!--Search form-->
-                <form class="form-inline" action={{ url_for('view') }}>
-                    <input class="form-control" type="text" placeholder="Search For Items">
-                    
+                <form class="form-inline" action='/view/' method="post">
+                    <input class="form-control" type="text" name='search' placeholder="Search For Items">
+                    <!-- <input type="submit" id ="sub" value="Go!"> -->
                 </form>
             </div>
            
@@ -167,6 +167,7 @@
     <div class="container">
         <div class="row">
 
+{% if items|length > 0%}
         {% for i in items %}
             <div class="col-md-3">
                 <!--Card-->
@@ -193,6 +194,10 @@
                 
             </div>
            {%endfor%} 
+{% else %}
+    <h4 align="center"> There are no products under this category.</h4>
+        
+{% endif %}
             
                 
             </div>
