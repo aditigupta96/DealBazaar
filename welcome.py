@@ -210,13 +210,48 @@ def signup():
 
         form_data = request.form
 
-        user.name = form_data.get('name',None)
-        user.email = form_data.get('email',None)
-        user.password = form_data.get('password',None)
-        user.contact = form_data.get('contact',None)
-        user.college = form_data.get('college',None)
-        user.city = form_data.get('city',None)
-        user.address = form_data.get('address',None)
+        if form_data.get('name'):
+            user.name = form_data.get('name',None)
+        else:
+            flash('Name field is required', category = "error")
+            return render_template('signup.html')
+
+        if form_data.get('email'):    
+            user.email = form_data.get('email',None)
+        else:
+            flash('Email field is required', category = "error")
+            return render_template('signup.html')
+
+        if form_data.get('password'):
+            user.password = form_data.get('password',None)
+        else:
+            flash('Password field is required', category = "error")
+            return render_template('signup.html')
+
+        if form_data.get('contact'):
+            user.contact = form_data.get('contact',None)
+        else:
+            flash('Contact field is required', category = "error")
+            return render_template('signup.html')
+
+        if form_data.get('college'):
+            user.college = form_data.get('college',None)
+        else:
+            flash('College field is required', category = "error")
+            return render_template('signup.html')
+
+        if form_data.get('city'):
+            user.city = form_data.get('city',None)
+        else:
+            flash('City field is required', category = "error")
+            return render_template('signup.html')
+
+        if form_data.get('address'):
+            user.address = form_data.get('address',None)
+        else:
+            flash('Address field is required', category = "error")
+            return render_template('signup.html')
+
         print user
 
         db = get_db()
