@@ -345,8 +345,21 @@ def post_item():
                 flash('Item Name is required', category = "error")
                 return render_template('upload.html')
 
-            item.description = form_data.get('description',None)
-            item.item_type = form_data.get('item_type', None).lower()
+            if form_data.get('description'):
+                if len(form_data.get('description')) > 25 and len(form_data.get('description')) < 251:
+                    item.description = form_data.get('description',None)
+                else:
+                    flash('Description length should be between 25-250 characters.', category = "error")
+                    return render_template('upload.html')
+            else:
+                flash('Description is required', category = "error")
+                return render_template('upload.html')
+
+            if form_data.get('item_type'):
+                item.item_type = form_data.get('item_type', None).lower()
+            else:
+                flash('Item type is required', category = "error")
+                return render_template('upload.html')
 
             if int(form_data.get('original_price')) > 0:
                 #print "adadad"
