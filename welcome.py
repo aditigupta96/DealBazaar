@@ -133,6 +133,21 @@ class Item(Document):
         return items
 
     @classmethod
+    def by_item_name(cls,name):
+        db = get_db()
+        item_obj = cls.view(
+                            db,
+                            '_design/items/_view/byItemName',
+                            key=name,
+                            include_docs=True
+                            )
+        items = []
+        for item in item_obj:
+            items.append(cls.wrap(item))
+
+        return items
+
+    @classmethod
     def get_item(cls,id):
         db = get_db()
         item = db.get(id,None)
@@ -331,7 +346,7 @@ def post_item():
                 return render_template('upload.html')
 
             item.description = form_data.get('description',None)
-            item.item_type = form_data.get('item_type', None)
+            item.item_type = form_data.get('item_type', None).lower()
 
             if int(form_data.get('original_price')) > 0:
                 #print "adadad"
@@ -367,10 +382,11 @@ def post_item():
 def view():
     if g.user:
         if request.method == 'POST':
-            item_type = request.form.get('search')
-            print item_type
+            query_text = request.form.get('search')
 
-            item_type_filter = Item.by_item_type(item_type)
+            query_text = query_text.lower()
+
+            item_type_filter = Item.by_item_type(query_text) + Item.by_item_name(query_text)
 
             for i in item_type_filter:
                 i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
