@@ -178,8 +178,16 @@
 
          
             <div class="carousel-item active">
-             
+             <div class="container ">
+            {% for error in get_flashed_messages(with_categories=true, category_filter=["error"]) %}
+            <div class="alert alert-dismissable alert-danger" align="center">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    {{ error[1] }}
+            </div>
+            {% endfor %}
+        </div>
                 <div class="flex-center animated fadeInDown">
+                
                     <ul>
                         <li>
                             <h1 class="h1-responsive" style="color: black; font-size: 30px; font-weight : bold; padding-top: 1%; ">DealBazaar.com | One Stop Solution</h1></li>

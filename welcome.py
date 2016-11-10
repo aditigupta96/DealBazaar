@@ -239,6 +239,9 @@ def login():
             if request.form['password'] == user['password']:
                 session['user'] = user
                 return redirect(url_for('after_login'))
+            else:
+                flash('Invalid email or password', category="error")
+        return render_template('login.html')
         # if request.form['password'] == 'password':
         #     session['user'] = request.form['email']
         #     return redirect(url_for('after_login'))
@@ -279,11 +282,31 @@ def post_item():
             item = Item()
 
             form_data = request.form
-            photo = request.files.get('photo')
-            item.name = form_data.get('item_name',None)
+
+            if request.files.get('photo'):
+                photo = request.files.get('photo')
+            else:
+                flash('Image is required', category = "error")
+                return render_template('upload.html')
+
+            if form_data.get('item_name'):
+                item.name = form_data.get('item_name',None)
+            else:
+                flash('Item Name is required', category = "error")
+                return render_template('upload.html')
+
             item.description = form_data.get('description',None)
             item.item_type = form_data.get('item_type', None)
-            item.original_price = form_data.get('original_price',None)
+
+            if int(form_data.get('original_price')) > 0:
+                #print "adadad"
+                item.original_price = form_data.get('original_price',None)
+            else:
+                #print "errrrrr"
+                flash('Invalid price', category = "error")
+                return render_template('upload.html')
+
+
             item.user = g.user.get('email', None)
             #item.date = datetime.datetime.now
 
@@ -300,7 +323,7 @@ def post_item():
             db.put_attachment(item,photo,filename=str(item.name)+'.jpg',content_type='image/jpeg')
 
             #return "Success...!!!"
-            return redirect(url_for('after_login'))
+            return render_template('home.html')
         return render_template('upload.html')
     else:
         return redirect(url_for('login'))
@@ -336,7 +359,12 @@ def item_details(id=None):
     if request.method == 'POST':
         bid = Bid()
 
-        bid.amount = request.form.get('amount')
+        if int(request.form.get('amount')) > 0:
+            bid.amount = request.form.get('amount')
+        else:
+            flash('Invalid Bid', category = "error")
+            return redirect('/view/'+id)
+
         bid.item = id
         bid.user = g.user['email']
 
