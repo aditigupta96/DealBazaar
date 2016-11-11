@@ -247,7 +247,7 @@ def signup():
             if len(form_data.get('contact')) == 10:
                 user.contact = form_data.get('contact',None)
             else:
-                flash('Mobile number should be of 10 chars.', category = "error")
+                flash('Mobile number should be of 10 digits.', category = "error")
                 return render_template('signup.html')
         else:
             flash('Contact field is required', category = "error")
