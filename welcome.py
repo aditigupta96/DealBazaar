@@ -483,22 +483,28 @@ def view():
 @app.route('/view/<id>', methods=['GET', 'POST'])
 def item_details(id=None):
     if request.method == 'POST':
-        bid = Bid()
+        owner = Item.get_item(id).user
 
-        if int(request.form.get('amount')) > 0:
-            bid.amount = request.form.get('amount')
-        else:
-            flash('Invalid Bid', category = "error")
+        if g.user['email'] == owner:
+            flash("You cannot place bid for this item.", category='error')
             return redirect('/view/'+id)
+        else:
+            bid = Bid()
 
-        bid.item = id
-        bid.user = g.user['email']
+            if int(request.form.get('amount')) > 0:
+                bid.amount = request.form.get('amount')
+            else:
+                flash('Invalid Bid', category = "error")
+                return redirect('/view/'+id)
 
-        db = get_db()
-        bid.id = uuid.uuid4().hex
-        bid.store(db)
+            bid.item = id
+            bid.user = g.user['email']
 
-        return redirect('/view/'+id)
+            db = get_db()
+            bid.id = uuid.uuid4().hex
+            bid.store(db)
+
+            return redirect('/view/'+id)
     else:
         if(id):
             db = get_db()
