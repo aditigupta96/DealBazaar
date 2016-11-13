@@ -7,16 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-    <title>DealBazaar.com</title>
+    <title>Material Design Bootstrap</title>
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
 
     <!-- Bootstrap core CSS -->
-    <link href="/static/stylesheets/bootstrap.min.css" rel="stylesheet">
+    <link href="static/stylesheets/bootstrap.min.css" rel="stylesheet">
 
     <!-- Material Design Bootstrap -->
-    <link href="/static/stylesheets/mdb.min.css" rel="stylesheet">
+    <link href="static/stylesheets/mdb.min.css" rel="stylesheet">
 
     <!-- Template styles -->
     <style rel="stylesheet">
@@ -49,9 +49,10 @@
                 background-color: #4285F4;
             }
         }
-        /* Carousel*/
         
-        .carousel {
+        
+        .carousel 
+        {
             height: 50%;
         }
         
@@ -93,6 +94,64 @@
         .flex-center {
             color: #fff;
         }
+
+        .navbar-nav li {
+            float: left;
+            font-size: 12px;
+
+        }
+
+        .navbar-nav ul {
+
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+
+
+.navbar-nav li a, .dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 7px 16px;
+    text-decoration: none;
+}
+
+.navbar-nav li a:hover, .dropdown:hover .dropbtn {
+    background-color: #FF6E15;
+    width:130px;
+    text-align: left;
+}
+
+.navbar-nav li.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    font-size: 12px ;
+    display: none;
+    position: absolute;
+    background-color: #000000;
+    min-width: 130px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
     </style>
 
 </head>
@@ -140,31 +199,28 @@
 
     </nav>
  
-    
+    <br>
+    <br>
+    <br>
+    <br>
    
     
     
-   <br>
-   <br>
-   <br>
-   <br>
-   <div class="container ">
-            {% for error in get_flashed_messages(with_categories=true, category_filter=["error"]) %}
-            <div class="alert alert-dismissable alert-danger" align="center">
-                <!-- <button type="button" class="close" data-dismiss="alert">&times;</button> -->
-                    {{ error[1] }}
-            </div>
-            {% endfor %}
-        </div>
+    <div>
+    <h4 align="center">Sold Items</h4>  
+
+    <br />
+   
     <div class="container">
         <div class="row">
 
-            <div class="col-md-6">
+        {% for item in sold_items %}
+            <div class="col-md-3">
                 <!--Card-->
                 <div class="card">
 
                     <div class="view overlay hm-white-slight">
-                        <img src="{{src}}" class="img-fluid" alt="">
+                        <img src="{{item.src}}" class="img-fluid" alt="">
                         <a href="#">
                             <div class="mask"></div>
                         </a>
@@ -172,112 +228,72 @@
                     
                     <div class="card-block">
                         
-                        <h4 class="card-title" align="center">Category : {{item.item_type}}</h4> 
-                        <br>
-
-                         {% if item.sold %}
-                           <h5 class="card-title" align="center">Sold : Yes</h5>
-                        {% else %}
-                            <h5 class="card-title" align="center">Sold : No</h5>
-                        {% endif %}
+                        <h4 class="card-title">{{item.name}}</h4>
                         
+                        <a href="#" class="btn btn-danger">Rs. {{item.original_price}} </a>
+                        <a href="/view/{{item.id}}/bid" class="btn btn-warning">View Bids</a>
                     </div>
                     
 
                 </div>
-
                 
             </div>
+        {% endfor %}    
+        </div>
+    </div>
+
+    
+
+   
+    <footer class="page-footer center-on-small-only">
 
         
-        <div class="row">
+        <div class="container-fluid">
+            <div class="row">
 
-            <div class="col-md-6">
-                <!--Card-->
-                <div class="card">
-
-                    
-   
-<div class="card-block">
-  <div class="form-group">
-    <label class="control-label col-sm-2" ></label>
-    <div class="col-sm-10">
-      <h4><b>Product Name : </b>{{item.name}}</h4>
-    </div>
-  </div>
-  </div>
-  <div class="card-block">
-  <div class="form-group">
-    <label class="control-label col-sm-2" ></label>
-    <div class="col-sm-10">
-      <h4><b>Description : </b>{{item.description}}</h4>
-    </div>
-  </div>
-  </div>
-  <div class="card-block">
-  <div class="form-group">
-    <label class="control-label col-sm-2" ></label>
-    <div class="col-sm-10">
-      <h4><b>Price : </b>{{item.original_price}}</h4>
-    </div>
-  </div>
-  </div>
-  <!-- <div class="form-group">
-    <label class="control-label col-sm-2" ></label>
-    <div class="col-sm-10">
-      <input type="number" name="original_price" class="form-control"  placeholder="Price">
-    </div>
-  </div> -->
-
-
-  <!-- <div class="form-group">
-    <label class="control-label col-sm-2" for="pwd"></label>
-    <div class="col-sm-10"> 
-      <input type="password" class="form-control" id="pwd" placeholder="Enter password">
-    </div>
-  </div> -->
-  
-  <!-- <div class="form-group">
-       <label class="control-label col-sm-2" ></label>
-       <div class="col-sm-4">
-           <h5>Upload Image :</h5>
-       </div>
-       <div class=" col-sm-5">
-       <label class = "btn btn-default btn-file" style="width:100%">
-            Browse <input type="file" name="photo" style="display: none;">
-        </label>
-        </div>
-  </div> -->
-                    
-                 <div class="card-block">
-                        
-                        
-<form class="form-horizontal" method="POST" enctype="multipart/form-data">
-
-  <div class="form-group">
-       <label class="control-label col-sm-2" ></label>
-
-    <div class="col-sm-10">
-      <input type="number" name="amount" placeholder="BID" class="form-control">
-    </div>
-
-       <label class = "btn btn-warning col-sm-12">
-       <div >
-            Bid<input type="submit" value="Bid" style="display: none;">
-        </div>
-        </label>
-  </div>
-                        
-                        <!-- <a href="#" class="btn btn-warning flex-center" >POST THE ITEM</a> -->
-                        
-                    </div>
-                    </form>
-
-                </div>
-</div>
-</div>
                 
-   
+
+                
+
+            </div>
+        </div>
+        
+
+        <hr>
+
+        
+        <div class="call-to-action">
+            <h4>DealBazaar.com | One Stop Shopping  </h4>
+            
+        </div>
+        
+
+        
+        <div class="footer-copyright">
+            <div class="container-fluid">
+                © 2016 Copyright: <a href="#"> Visit : DealBazzar.com </a>
+
+            </div>
+        </div>
+        
+
+    </footer>
+    
+
+
+    
+    <script type="text/javascript" src="static/js/jquery-2.2.3.min.js"></script>
+
+    
+    <script type="text/javascript" src="static/js/tether.min.js"></script>
+
+    
+    <script type="text/javascript" src="static/js/bootstrap.min.js"></script>
+
+    
+    <script type="text/javascript" src="static/js/mdb.min.js"></script>
+
+
 </body>
 
 </html>

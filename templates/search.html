@@ -169,6 +169,7 @@
 
 {% if items|length > 0%}
         {% for i in items %}
+            {% if i.sold == 0 %}
             <div class="col-md-3">
                 <!--Card-->
                 <div class="card" >
@@ -183,7 +184,7 @@
                     <div class="card-block">
                         
                         <h4 class="card-title">{{i.name}}</h4>
-                        
+
                         <p class="card-text">{{i.description}}</p>
                         <a href="#" class="btn btn-danger">Rs. {{i.original_price}} </a>
                         <a href="/view/{{i.id}}" class="btn btn-warning">Bid</a>
@@ -193,6 +194,7 @@
                 </div>
                 
             </div>
+            {% endif %}
            {%endfor%} 
 {% else %}
     <h4 align="center"> There are no products under this category.</h4>

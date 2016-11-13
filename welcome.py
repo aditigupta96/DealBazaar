@@ -72,6 +72,7 @@ class User(Document):
         
         return cls.wrap(user)
 
+    @classmethod
     def confirm(self):
         db = get_db()
         doc = db.get(self.email)
@@ -87,10 +88,18 @@ class Item(Document):
     date = DateTimeField(default=datetime.now)
     user = TextField()
     filename = TextField()
+    sold = IntegerField(default=0)
 
     @classmethod
     def all(cls,db):
         return cls.view(db,'_design/items/_view/all-items')
+
+    @classmethod
+    def confirmSold(self,id):
+        db = get_db()
+        doc = db.get(id)
+        doc['sold'] = 1
+        db[id] = doc
 
     @classmethod
     def by_date(cls,limit = None):
@@ -165,7 +174,6 @@ class Item(Document):
         
         return cls.wrap(item)
 
-
 class Bid(Document):
     doc_type = TextField(default='bid')
     amount = FloatField()
@@ -196,19 +204,6 @@ class Bid(Document):
         for row in bids_obj:
             bids.append(cls.wrap(row))
         return bids
-
-
-class SoldItems(Document):
-    doc_type = TextField(default='solditems')
-    item = TextField()
-    user = TextField()
-    date = DateTimeField()
-
-class PurchasedItems(Document):
-    doc_type = TextField(default='purchaseditems')
-    item = TextField()
-    user = TextField()
-    dateOfPurchase = DateTimeField()
 
 def get_db():
     if not hasattr(g, 'db'):
@@ -307,7 +302,7 @@ def signup():
         confirm_url = url_for('confirm_email', token=token, _external=True)
         html = render_template('activate.html', confirm_url=confirm_url)
         subject = "Please confirm your email"
-        print user.email
+        #print user.email
         send_email(user.email, subject, html)
 
         flash('A confirmation link is sent to your email_id.Please confirm before logging in.', category = "error")
@@ -447,8 +442,9 @@ def post_item():
             item.id = uuid.uuid4().hex
             item.store(db)
             db.put_attachment(item,photo,filename=str(item.name)+'.jpg',content_type='image/jpeg')
+            
+            flash("Your item has been posted.", category='error')
 
-            #return "Success...!!!"
             return render_template('home.html')
         return render_template('upload.html')
     else:
@@ -520,8 +516,7 @@ def item_details(id=None):
 def view_bids(id=None):
     if g.user:
         db = get_db()
-        bids = Bid.get_by_item(db,id)
-        print 
+        bids = Bid.get_by_item(db,id) 
     
         item = Item.get_item(id)
             
@@ -535,23 +530,57 @@ def view_bids(id=None):
 @app.route('/view/<id>/bid/<bid_id>/accept', methods=['GET'])
 def accept_bid(id=None, bid_id=None):
     if g.user:
-        buyer = Bid.get_bid(bid_id).user
-        seller = Item.get_item(id).user
+        buyer_email = Bid.get_bid(bid_id).user
+        seller_email = Item.get_item(id).user
         
-        html = render_template('seller.html')
+        buyer = User.get_user(buyer_email)
+        seller = User.get_user(seller_email)
+
+        db = get_db()
+        item = Item.get_item(id)
+        
+        items = item._data
+        
+        src = DATABASE_URL + id + '/' + item.name + '.jpg/'
+
+        html = render_template('seller.html', name=buyer.name, email=buyer_email, contact=buyer.contact,
+                                college=buyer.college, city=buyer.city, address=buyer.address,
+                                item=items, src=src )
+
         subject = "Buyer details"
 
-        send_email(seller, subject, html)
+        send_email(seller_email, subject, html)
 
-        html1 = render_template('buyer.html')
+        html1 = render_template('buyer.html', name=seller.name, email=seller_email, contact=seller.contact,
+                                college=seller.college, city=seller.city, address=seller.address, 
+                                item=items, src=src)
+
         subject1 = "Seller details"
 
-        send_email(buyer, subject1, html1)
+        send_email(buyer_email, subject1, html1)
 
+        item.confirmSold(id)
+        flash("Confirmation Email is sent to your email id.", category='error')
         return redirect(url_for('view_bids', id=id))
 
     return redirect(url_for('login')) 
          
+@app.route('/sold_items')
+def sold_items():
+    if g.user:
+        user_items = Item.by_user(g.user['email'])
+
+        sold_items = []
+        for i in user_items:
+            if i.sold == 1:
+                sold_items.append(i)
+         
+        for i in sold_items:
+            i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
+
+        return render_template('sold_items.html', sold_items = sold_items)
+
+    return redirect(url_for('login'))
 
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
