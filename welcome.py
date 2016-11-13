@@ -250,8 +250,13 @@ def signup():
             flash('Name field is required', category = "error")
             return render_template('signup.html')
 
-        if form_data.get('email'):    
-            user.email = form_data.get('email',None)
+        if form_data.get('email'):
+            email = form_data.get('email',None)
+            if User.get_user(email) is None:    
+                user.email = email
+            else:
+                flash("User already exists", category='error')
+                return render_template('signup.html')
         else:
             flash('Email field is required', category = "error")
             return render_template('signup.html')
