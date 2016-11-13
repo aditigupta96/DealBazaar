@@ -302,9 +302,9 @@ def signup():
         html = render_template('activate.html', confirm_url=confirm_url)
         subject = "Please confirm your email"
         print user.email
-        send_email('agarwalm214@gmail.com', subject, html)
+        send_email(user.email, subject, html)
 
-        
+        flash('A confirmation link is sent to your email_id.Please confirm before logging in.', category = "error")
         return redirect(url_for('login'))
 
     return render_template('signup.html')
@@ -315,12 +315,15 @@ def login():
         session.pop('user', None)
 
         email = request.form['email']
-        db = get_db()
+        # db = get_db()
         
-        user = db.get(email,None)
-        if user is not None:
-            if request.form['password'] == user['password']:
-                session['user'] = user
+        user = User.get_user(email)
+        if not user.confirmed:
+            flash('Please confirm your account first...!!!', category="error")
+
+        if user.confirmed and user is not None:
+            if request.form['password'] == user.password:
+                session['user'] = user._data
                 return redirect(url_for('after_login'))
             else:
                 flash('Invalid email or password', category="error")
@@ -347,15 +350,21 @@ def after_login():
 @app.route('/confirm/<token>') 
 def confirm_email(token):
     try:
+        # print token
         email = confirm_token(token)
+        # print "email ",email
     except:
         flash('The confirmation link is invalid or has expired.', category='error')
-    user = User.get_user(email)
 
-    if user.confirmed:
-        return 'Account already confirmed. Please login.'
+    if email:    
+        user = User.get_user(email)
+
+        if user.confirmed:
+            return 'Account already confirmed. Please login.'
+        else:
+            user.confirm()
     else:
-        user.confirm()
+        flash("Unexpected error", category="error")
 
     return redirect(url_for('login'))
 
