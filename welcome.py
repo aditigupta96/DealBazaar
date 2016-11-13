@@ -1,17 +1,3 @@
-# Copyright 2015 IBM Corp. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 import os 
 import couchdb
 import uuid
@@ -25,7 +11,9 @@ from werkzeug import FileStorage
 from flask_uploads import (UploadSet, configure_uploads, IMAGES, UploadNotAllowed)
 # from cloudant.view import View
 
-
+from tokens import generate_confirmation_token, confirm_token
+from flask_mail import Mail
+from emails import send_email
 
 # UPLOADED_PHOTOS_DEST = 'uploads'
 
@@ -43,8 +31,21 @@ app.config.from_object(__name__)
 # app.config.from_envvar('DEALBAZAAR_SETTINGS', silent=True)
 app.secret_key = os.urandom(24)
 
+mail = Mail(app)
+app.config.update(
+        DEBUG = True,
+        SECURITY_PASSWORD_SALT = 'random',
+        BCRYPT_LOG_ROUNDS = 13,
+        MAIL_SERVER = 'smtp.gmail.com',
+        MAIL_PORT = 587,
+        MAIL_USE_TLS = True,
+        MAIL_USE_SSL = False,
+        MAIL_USERNAME = os.environ['DEALBAZAAR_USERNAME'],
+        MAIL_PASSWORD = os.environ['DEALBAZAAR_PASSWORD'],
+        MAIL_DEFAULT_SENDER = 'dealbazaar.swe@gmail.com'
+    )
 
-
+mail = Mail(app)
 # uploaded_photos = UploadSet('photos', IMAGES)
 # configure_uploads(app, uploaded_photos)
 
@@ -58,6 +59,7 @@ class User(Document):
     college = TextField()
     city = TextField()
     address = TextField()
+    confirmed = IntegerField(default=0)
     createdate = DateTimeField(default=datetime.now)
 
     @classmethod
@@ -69,6 +71,12 @@ class User(Document):
             return None
         
         return cls.wrap(user)
+
+    def confirm(self):
+        db = get_db()
+        doc = db.get(self.email)
+        doc['confirmed'] = 1
+        db[self.email] = doc
 
 class Item(Document):
     doc_type = TextField(default='item')
@@ -189,6 +197,17 @@ class Bid(Document):
             bids.append(cls.wrap(row))
         return bids
 
+class SoldItems(Document):
+    doc_type = TextField(default='solditems')
+    item = TextField()
+    user = TextField()
+    date = DateTimeField()
+
+class PurchasedItems(Document):
+    doc_type = TextField(default='purchaseditems')
+    item = TextField()
+    user = TextField()
+    dateOfPurchase = DateTimeField()
 
 def get_db():
     if not hasattr(g, 'db'):
@@ -244,10 +263,10 @@ def signup():
             return render_template('signup.html')
 
         if form_data.get('contact'):
-            if len(form_data.get('contact')) == 10:
+            if len(form_data.get('contact')) == 10 and int(form_data.get('contact')) > 0:
                 user.contact = form_data.get('contact',None)
             else:
-                flash('Mobile number should be of 10 digits.', category = "error")
+                flash('Invalid Mobile Number', category = "error")
                 return render_template('signup.html')
         else:
             flash('Contact field is required', category = "error")
@@ -271,11 +290,21 @@ def signup():
             flash('Address field is required', category = "error")
             return render_template('signup.html')
 
-        print user
+        # print user
+
+        user.confirmed = 0
 
         db = get_db()
         db[user.email] = user._data
 
+        token = generate_confirmation_token(user.email)
+        confirm_url = url_for('confirm_email', token=token, _external=True)
+        html = render_template('activate.html', confirm_url=confirm_url)
+        subject = "Please confirm your email"
+        print user.email
+        send_email('agarwalm214@gmail.com', subject, html)
+
+        
         return redirect(url_for('login'))
 
     return render_template('signup.html')
@@ -312,6 +341,21 @@ def after_login():
 
 
         return render_template('home.html', recent_items = recent_items)
+
+    return redirect(url_for('login'))
+
+@app.route('/confirm/<token>') 
+def confirm_email(token):
+    try:
+        email = confirm_token(token)
+    except:
+        flash('The confirmation link is invalid or has expired.', category='error')
+    user = User.get_user(email)
+
+    if user.confirmed:
+        return 'Account already confirmed. Please login.'
+    else:
+        user.confirm()
 
     return redirect(url_for('login'))
 
