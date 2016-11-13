@@ -197,6 +197,7 @@ class Bid(Document):
             bids.append(cls.wrap(row))
         return bids
 
+
 class SoldItems(Document):
     doc_type = TextField(default='solditems')
     item = TextField()
@@ -530,6 +531,27 @@ def view_bids(id=None):
         return render_template('view_bid.html',bids=bids,src=src,item=items)
     else:
         return redirect(url_for('login'))
+
+@app.route('/view/<id>/bid/<bid_id>/accept', methods=['GET'])
+def accept_bid(id=None, bid_id=None):
+    if g.user:
+        buyer = Bid.get_bid(bid_id).user
+        seller = Item.get_item(id).user
+        
+        html = render_template('seller.html')
+        subject = "Buyer details"
+
+        send_email(seller, subject, html)
+
+        html1 = render_template('buyer.html')
+        subject1 = "Seller details"
+
+        send_email(buyer, subject1, html1)
+
+        return redirect(url_for('view_bids', id=id))
+
+    return redirect(url_for('login')) 
+         
 
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
