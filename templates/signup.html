@@ -20,6 +20,8 @@
 
     <link href="static/stylesheets/style1.css" rel="stylesheet">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
     <!-- Template styles -->
     <style rel="stylesheet">
         /* TEMPLATE STYLES */
@@ -201,7 +203,7 @@
                             <br>
                             <input type="email" name="email" id="searchFieldText" placeholder="Email Id"><br>
                             <br>
-                            <input type="text" name="address" id="searchFieldText" placeholder="Address"><br>
+                            <input type="text" onFocus="geolocate()" name="address" id="address" placeholder="Address"><br>
                             <br>
                             <input type="text" name="college" id="searchFieldText" placeholder="Name of the Institute"><br>
                             <br>
@@ -210,6 +212,9 @@
                             <input type="tel" name="contact" id="searchFieldText" placeholder="Phone Number"><br>
                             <br>
                             <input type="Password" name="password" id="searchFieldText" placeholder="Password"><br>
+
+                            <input id="placeid" name="placeid" type="hidden"></input>
+
                             <br>
                             <input type="submit" value="REGISTER" id="searchFieldText" class="btn btn-default btn-lg" ><br>
                             </center>
@@ -230,5 +235,38 @@
     
     </div>
 
+    <script type="text/javascript">
+      var placeSearch, autocomplete;
+      function initAutocomplete() {
+        autocomplete = new google.maps.places.Autocomplete(
+            /** @type {!HTMLInputElement} */(document.getElementById('address')),
+            {types: ['geocode']});
+
+        autocomplete.addListener('place_changed', function(){
+          id = autocomplete.getPlace().place_id;
+          console.log(id);
+          document.getElementById('placeid').value = id;
+        });
+      }
+
+      function geolocate() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var geolocation = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            var circle = new google.maps.Circle({
+              center: geolocation,
+              radius: position.coords.accuracy
+            });
+            autocomplete.setBounds(circle.getBounds());
+          });
+        }
+      }
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVE9osSCgxkIPp4LGEp1xwhmGrMVxNpnc&libraries=places&callback=initAutocomplete"
+        async defer></script>    
     </body>
     </html>

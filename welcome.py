@@ -1,6 +1,7 @@
 import os 
 import couchdb
 import uuid
+import requests
 
 from flask import Flask, jsonify, session, render_template, request, redirect, g, url_for, flash
 # from .models import User
@@ -16,6 +17,10 @@ from flask_mail import Mail
 from emails import send_email
 
 # UPLOADED_PHOTOS_DEST = 'uploads'
+GOOGLE_GEOCODE_URL = 'https://maps.googleapis.com/maps/api/geocode/json?place_id={0}&key={1}'
+GOOGLE_API_KEY = 'AIzaSyDVE9osSCgxkIPp4LGEp1xwhmGrMVxNpnc'
+
+GOOGLE_DISTANCE_URL = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins={0},{1}&destinations={2},{3}&key={4}'
 
 cloudant_data = {
     "username": "052ca863-0f20-49a8-9813-330b0813683a-bluemix",
@@ -61,6 +66,9 @@ class User(Document):
     address = TextField()
     confirmed = IntegerField(default=0)
     createdate = DateTimeField(default=datetime.now)
+    latitude = TextField()
+    longitude = TextField()
+    place_id = TextField()
 
     @classmethod
     def get_user(cls,email):
@@ -72,12 +80,17 @@ class User(Document):
         
         return cls.wrap(user)
 
-    @classmethod
     def confirm(self):
         db = get_db()
-        doc = db.get(self.email)
-        doc['confirmed'] = 1
-        db[self.email] = doc
+        self.confirmed = 1
+        self.store(db)
+    
+    def calculate_geocode(self):
+        place_id = self.place_id
+        data = requests.get(GOOGLE_GEOCODE_URL.format(self.place_id, GOOGLE_API_KEY))
+        self.latitude = str(data.json()['results'][0]['geometry']['location']['lat'])
+        self.longitude = str(data.json()['results'][0]['geometry']['location']['lng'])
+
 
 class Item(Document):
     doc_type = TextField(default='item')
@@ -94,12 +107,10 @@ class Item(Document):
     def all(cls,db):
         return cls.view(db,'_design/items/_view/all-items')
 
-    @classmethod
     def confirmSold(self,id):
         db = get_db()
-        doc = db.get(id)
-        doc['sold'] = 1
-        db[id] = doc
+        self.sold = 1
+        self.store(db)
 
     @classmethod
     def by_date(cls,limit = None):
@@ -174,6 +185,22 @@ class Item(Document):
         
         return cls.wrap(item)
 
+    def calculate_distance(self, customer_id):
+        customer = User.get_user(customer_id)
+        seller = User.get_user(self.user)
+
+        data = requests.get(GOOGLE_DISTANCE_URL.format(customer.latitude,
+                            customer.longitude, seller.latitude,
+                            seller.longitude, GOOGLE_API_KEY))
+
+        distance_text = str(data.json()['rows'][0]['elements'][0]['distance']['text'])
+        distance_value = int(data.json()['rows'][0]['elements'][0]['distance']['value'])
+        time = str(data.json()['rows'][0]['elements'][0]['duration']['text'])
+
+        distance = [distance_text, distance_value, time]
+
+        return distance
+
 class Bid(Document):
     doc_type = TextField(default='bid')
     amount = FloatField()
@@ -204,6 +231,28 @@ class Bid(Document):
         for row in bids_obj:
             bids.append(cls.wrap(row))
         return bids
+
+class Purchased(Document):
+    doc_type = TextField(default='purchase')
+    item_id = TextField()
+    buyer = TextField()
+    seller = TextField()
+    date = DateTimeField()
+
+    @classmethod
+    def by_user(cls,buyer):
+        db = get_db()
+        item_obj = cls.view(
+                            db,
+                            '_design/purchased/_view/get_byUser',
+                            key=buyer,
+                            include_docs=True
+                            )
+        items = []
+        for item in item_obj:
+            items.append(cls.wrap(item))
+
+        return items
 
 def get_db():
     if not hasattr(g, 'db'):
@@ -239,6 +288,7 @@ def signup():
         user = User()
 
         form_data = request.form
+        print form_data
 
         if form_data.get('name'):
             user.name = form_data.get('name',None)
@@ -285,15 +335,20 @@ def signup():
             flash('City field is required', category = "error")
             return render_template('signup.html')
 
-        if form_data.get('address'):
+        if form_data.get('address', None):
             user.address = form_data.get('address',None)
         else:
             flash('Address field is required', category = "error")
             return render_template('signup.html')
 
+        # print "place ", form_data.get('placeid')
+        user.place_id = form_data.get('placeid')
+
         # print user
 
         user.confirmed = 0
+        
+        user.calculate_geocode()
 
         db = get_db()
         db[user.email] = user._data
@@ -443,14 +498,13 @@ def post_item():
             item.store(db)
             db.put_attachment(item,photo,filename=str(item.name)+'.jpg',content_type='image/jpeg')
             
-            flash("Your item has been posted.", category='error')
 
             return render_template('home.html')
         return render_template('upload.html')
     else:
         return redirect(url_for('login'))
 
-@app.route('/view/', methods=['GET', 'POST'])
+@app.route('/view', methods=['GET', 'POST'])
 def view():
     if g.user:
         if request.method == 'POST':
@@ -501,6 +555,7 @@ def item_details(id=None):
             bid.id = uuid.uuid4().hex
             bid.store(db)
 
+            flash('Your bid has been placed successfully..!!!', category='error')
             return redirect('/view/'+id)
     else:
         if(id):
@@ -510,7 +565,8 @@ def item_details(id=None):
             items = item._data
             src = DATABASE_URL + id + '/' + item.name + '.jpg/'
             
-            return render_template('item_description.html', item = items,src=src)
+            distance = item.calculate_distance(g.user['email'])
+            return render_template('item_description.html', item=items, src=src, distance=distance)
 
 @app.route('/view/<id>/bid')
 def view_bids(id=None):
@@ -560,6 +616,18 @@ def accept_bid(id=None, bid_id=None):
         send_email(buyer_email, subject1, html1)
 
         item.confirmSold(id)
+
+        purchase = Purchased()
+        purchase.buyer = buyer_email
+        purchase.item_id = id
+        purchase.seller = seller.name
+        purchase.date = datetime.now
+        
+        db = get_db()
+        purchase.id = uuid.uuid4().hex
+        purchase.store(db)
+        print purchase
+
         flash("Confirmation Email is sent to your email id.", category='error')
         return redirect(url_for('view_bids', id=id))
 
@@ -581,6 +649,42 @@ def sold_items():
         return render_template('sold_items.html', sold_items = sold_items)
 
     return redirect(url_for('login'))
+
+@app.route('/purchased_items')
+def purchased_items():
+    if g.user:
+        purchase = Purchased.by_user(g.user['email'])
+        #print purchase
+        purchased_items = []
+        if len(purchase) > 0:
+            for i in purchase:
+                item_id = i.item_id
+                item = Item.get_item(item_id)
+                item.seller = i.seller
+                item.sold_date = i.date.date()
+                purchased_items.append(item)
+
+        for i in purchased_items:
+            i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
+        print purchased_items
+        return render_template('purchased_items.html', purchased_items = purchased_items)
+
+    return redirect(url_for('login'))
+
+@app.route('/views/<filter>', methods=['GET', 'POST'])
+def filter_byLocation(filter=None):
+    if g.user:
+        db = get_db()
+        it = Item.all(db)
+        items = []
+        for i in it:
+            i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
+            i.distance = i.calculate_distance(g.user['email'])
+            items.append(i)
+        
+        items.sort(key = lambda x : x.distance[1])
+
+        return render_template('search.html', items = items)
 
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
