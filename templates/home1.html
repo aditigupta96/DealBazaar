@@ -83,6 +83,9 @@
         </ul>
       </li>
       <li><a href="/purchased_items">My Purchase</a></li>
+
+      <li style="padding-left:7em; padding-top:0.3em;"><a href="/sell"><button style="float:center; padding: 0.25em 4em ; border-radius:2px; background-color:#ffffff; border-color:#ffffff ; color:black ;border:none; font-size: 15px; "> Sell an item </button></a></li>
+	      <li style="padding-left:2.5em; padding-top:0.3em;"><a href="/view"><button style="float:center; padding: 0.25em 2em ;border-radius:2px;background-color:#ffffff; border-color:#ffffff; color:black; border:none; font-size: 15px;"> Show all items </button></a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li><a href="/settings" title="Profile Settings"><span class="glyphicon glyphicon-wrench"></span></a></li>
@@ -94,15 +97,36 @@
 
 
 	<div style="position:relative;">
-	<section class="section light-gray-bg clearfix" >
+	<section class="section light-gray-bg clearfix" style="background: #4CA1AF; /* fallback for old browsers */
+								background: -webkit-linear-gradient(to left, #4CA1AF , #C4E0E5); /* Chrome 10-25, Safari 5.1-6 */
+								background: linear-gradient(to left, #2c3e50 , #3498db);width:100%;height:100%;"
+>
 				<div class="container">
 					<div class="row">
 						<div class="col-md-12">
 								<center>
-								<form action="/view/" method="POST" class="search" style="margin-top:18%; margin-bottom:22%;">
+								<!-- <form action="/view/" method="POST" class="search" style="margin-top:18%; margin-bottom:22%;">
 										<input type="text" name="search" placeholder="Search .." maxlength="20" id="search">
 										<input type="submit" id ="sub" value="Go!">
-								</form>
+								</form> -->
+
+
+								<form action="/view/" method="POST" class="search" style="margin-top:18%; margin-bottom:20%;">
+								<div class="input-group">
+                <div class="input-group-btn search-panel">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="margin-left:235%;margin-top:-3%;">
+                    	<span id="search_concept">Filter by</span> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" style="margin-left:235%;">
+                      <li><a href="/views/distance">Location</a></li>
+           
+                    </ul>
+
+                </div>
+                <input style="width:50%; height:30px;" type="text" name="search" placeholder="Search .." maxlength="20" id="search">
+										<input style="height:30px;" type="submit" id ="sub" value="Go!">
+                            </div>
+                			</form>
 								</center>
 
 						</div>
