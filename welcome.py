@@ -3,6 +3,7 @@ import couchdb
 import uuid
 import requests
 
+from datetime import datetime
 from flask import Flask, jsonify, session, render_template, request, redirect, g, url_for, flash
 # from .models import User
 from datetime import datetime
@@ -628,7 +629,8 @@ def view_bids(id=None):
         items = item._data
         src = DATABASE_URL + id + '/' + item.name + '.jpg/'
 
-        return render_template('view_bid.html',bids=bids,src=src,item=items)
+        flash('Buyer details have been sent to your emailid.', category='error')
+        return render_template('view_bids1.html',bids=bids,src=src,item=items)
     else:
         return redirect(url_for('login'))
 
@@ -670,7 +672,7 @@ def accept_bid(id=None, bid_id=None):
         purchase.buyer = buyer_email
         purchase.item_id = id
         purchase.seller = seller.name
-        purchase.date = datetime.now
+        purchase.date = datetime.now()
         
         db = get_db()
         purchase.id = uuid.uuid4().hex
