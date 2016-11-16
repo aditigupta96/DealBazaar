@@ -91,6 +91,27 @@ class User(Document):
         self.latitude = str(data.json()['results'][0]['geometry']['location']['lat'])
         self.longitude = str(data.json()['results'][0]['geometry']['location']['lng'])
 
+    def update(self, contact=None, password=None, city = None, college=None, address=None, placeid=None):
+        db = get_db()
+        if contact and contact != "":
+            self.contact = contact
+
+        if city and city != "":
+            self.city = city
+
+        if college and college != "":
+            self.college = college
+
+        if password and password != "":
+            self.password = password
+
+        if address and address != "" and placeid != "":
+            self.address = address
+            self.place_id = placeid
+            self.calculate_geocode()
+
+        self.store(db)
+
 
 class Item(Document):
     doc_type = TextField(default='item')
@@ -98,6 +119,7 @@ class Item(Document):
     item_type = TextField()
     description = TextField()
     original_price = FloatField()
+    mrp = FloatField()
     date = DateTimeField(default=datetime.now)
     user = TextField()
     filename = TextField()
@@ -277,9 +299,9 @@ def before_request():
         g.user = session['user']
 
 
-@app.route('/')
-def Welcome():
-    return app.send_static_file('index.html')
+# @app.route('/')
+# def Welcome():
+#     return render_template('signup.html')
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -365,7 +387,7 @@ def signup():
 
     return render_template('signup.html')
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         session.pop('user', None)
@@ -374,15 +396,18 @@ def login():
         # db = get_db()
         
         user = User.get_user(email)
-        if not user.confirmed:
-            flash('Please confirm your account first...!!!', category="error")
 
-        if user.confirmed and user is not None:
-            if request.form['password'] == user.password:
+        if user is not None:
+            if not user.confirmed:
+                flash('Please confirm your account first...!!!', category="error")
+
+            elif request.form['password'] == user.password:
                 session['user'] = user._data
                 return redirect(url_for('after_login'))
             else:
-                flash('Invalid email or password', category="error")
+                flash('Invalid password', category="error")
+        else:
+            flash('Invalid email', category="error")
         return render_template('login.html')
         # if request.form['password'] == 'password':
         #     session['user'] = request.form['email']
@@ -393,13 +418,13 @@ def login():
 @app.route('/home')
 def after_login():
     if g.user:
-        recent_items = Item.by_date(3)
+        recent_items = Item.by_date(4)
 
         for i in recent_items:
             i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
 
 
-        return render_template('home.html', recent_items = recent_items)
+        return render_template('home1.html', recent_items = recent_items)
 
     return redirect(url_for('login'))
 
@@ -432,8 +457,12 @@ def posted_items():
         for i in user_items:
             i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
             #print i.src
-            
-        return render_template('posted_items.html', user_items = user_items)
+        recent_items = Item.by_date(4)
+
+        for i in recent_items:
+            i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/' 
+
+        return render_template('posted_items.html', items = user_items, recent_items=recent_items)
 
     return redirect(url_for('login'))
 
@@ -450,29 +479,29 @@ def post_item():
                 photo = request.files.get('photo')
             else:
                 flash('Image is required', category = "error")
-                return render_template('upload.html')
+                return render_template('upload1.html')
 
             if form_data.get('item_name'):
                 item.name = form_data.get('item_name',None)
             else:
                 flash('Item Name is required', category = "error")
-                return render_template('upload.html')
+                return render_template('upload1.html')
 
             if form_data.get('description'):
                 if len(form_data.get('description')) > 25 and len(form_data.get('description')) < 251:
                     item.description = form_data.get('description',None)
                 else:
                     flash('Description length should be between 25-250 characters.', category = "error")
-                    return render_template('upload.html')
+                    return render_template('upload1.html')
             else:
                 flash('Description is required', category = "error")
-                return render_template('upload.html')
+                return render_template('upload1.html')
 
             if form_data.get('item_type'):
                 item.item_type = form_data.get('item_type', None).lower()
             else:
                 flash('Item type is required', category = "error")
-                return render_template('upload.html')
+                return render_template('upload1.html')
 
             if int(form_data.get('original_price')) > 0:
                 #print "adadad"
@@ -480,8 +509,15 @@ def post_item():
             else:
                 #print "errrrrr"
                 flash('Invalid price', category = "error")
-                return render_template('upload.html')
+                return render_template('upload1.html')
 
+            if int(form_data.get('mrp')) > 0:
+                #print "adadad"
+                item.mrp = form_data.get('mrp',None)
+            else:
+                #print "errrrrr"
+                flash('Invalid MRP.', category = "error")
+                return render_template('upload1.html')
 
             item.user = g.user.get('email', None)
             #item.date = datetime.datetime.now
@@ -498,13 +534,13 @@ def post_item():
             item.store(db)
             db.put_attachment(item,photo,filename=str(item.name)+'.jpg',content_type='image/jpeg')
             
-
-            return render_template('home.html')
-        return render_template('upload.html')
+            flash('Your item has been posted.', category = "error")
+            return redirect(url_for('after_login'))
+        return render_template('upload1.html')
     else:
         return redirect(url_for('login'))
 
-@app.route('/view', methods=['GET', 'POST'])
+@app.route('/view/', methods=['GET', 'POST'])
 def view():
     if g.user:
         if request.method == 'POST':
@@ -513,11 +549,16 @@ def view():
             query_text = query_text.lower()
 
             item_type_filter = Item.by_item_type(query_text) + Item.by_item_name(query_text)
-
+            
             for i in item_type_filter:
                 i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
+            print item_type_filter
+            recent_items = Item.by_date(4)
+            
+            for i in recent_items:
+                i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
 
-            return render_template('search.html', items = item_type_filter)
+            return render_template('search.html', items = item_type_filter, recent_items=recent_items)
     
         else:    
             db = get_db()
@@ -526,8 +567,12 @@ def view():
             for i in it:
                 i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
                 #print i.src
+            recent_items = Item.by_date(4)
 
-            return render_template('search.html', items = it)
+            for i in recent_items:
+                i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
+
+            return render_template('search.html', items = it, recent_items=recent_items)
     
     return redirect(url_for('login'))
 
@@ -572,7 +617,11 @@ def item_details(id=None):
 def view_bids(id=None):
     if g.user:
         db = get_db()
-        bids = Bid.get_by_item(db,id) 
+        bids = Bid.get_by_item(db,id)
+
+        for bid in bids:
+            x = User.get_user(bid.user)
+            bid.name = x.name 
     
         item = Item.get_item(id)
             
@@ -646,7 +695,12 @@ def sold_items():
         for i in sold_items:
             i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
 
-        return render_template('sold_items.html', sold_items = sold_items)
+        recent_items = Item.by_date(4)
+
+        for i in recent_items:
+            i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
+
+        return render_template('sold_items.html', sold_items = sold_items, recent_items=recent_items)
 
     return redirect(url_for('login'))
 
@@ -654,21 +708,37 @@ def sold_items():
 def purchased_items():
     if g.user:
         purchase = Purchased.by_user(g.user['email'])
-        #print purchase
-        purchased_items = []
-        if len(purchase) > 0:
-            for i in purchase:
-                item_id = i.item_id
-                item = Item.get_item(item_id)
-                item.seller = i.seller
-                item.sold_date = i.date.date()
-                purchased_items.append(item)
+        print "purchase",purchase
+        if len(purchase)>0:
+            purchased_items = []
+            if len(purchase) > 0:
+                for i in purchase:
+                    item_id = i.item_id
+                    item = Item.get_item(item_id)
+                    if item:
+                        item.seller = i.seller
+                        item.sold_date = i.date.date()
+                        purchased_items.append(item)
 
-        for i in purchased_items:
-            i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
-        print purchased_items
-        return render_template('purchased_items.html', purchased_items = purchased_items)
+            for i in purchased_items:
+                i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
+            #print purchased_items
 
+            recent_items = Item.by_date(4)
+
+            for i in recent_items:
+                i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
+
+            return render_template('purchased_items.html', items = purchased_items, recent_items=recent_items)
+        else:
+            purchased_items = []
+
+            recent_items = Item.by_date(4)
+
+            for i in recent_items:
+                i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
+
+            return render_template('purchased_items.html', items = purchased_items, recent_items=recent_items)
     return redirect(url_for('login'))
 
 @app.route('/views/<filter>', methods=['GET', 'POST'])
@@ -684,7 +754,61 @@ def filter_byLocation(filter=None):
         
         items.sort(key = lambda x : x.distance[1])
 
-        return render_template('search.html', items = items)
+        recent_items = Item.by_date(4)
+
+        for i in recent_items:
+            i.src = DATABASE_URL + i.id + '/' + i.name + '.jpg/'
+
+        return render_template('search.html', items = items, recent_items=recent_items)
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    if g.user:
+        session.pop('user', None)
+
+    flash('You have been successfully logged out.', category="error")
+    return render_template('login.html')
+
+@app.route('/settings', methods=['GET', 'POST'])
+def update():
+    if g.user:
+        if request.method == "POST":
+            form_data = request.form
+            #print form_data.get('placeid') == ""
+
+            email = g.user.get('email', None)
+            user = User.get_user(email)
+
+            #call user update function here
+            user.update(form_data.get('contact', None), form_data.get('password', None),
+                       form_data.get('city', None), form_data.get('college', None),
+                       form_data.get('address', None), form_data.get('placeid', None))
+
+            user_data = {}
+            user_data['name'] = user.name
+            user_data['email'] = user.email
+            user_data['city'] = user.city
+            user_data['college'] = user.college
+            user_data['address'] = user.address
+            user_data['contact'] = user.contact
+
+            flash("Account details have been updated.", category="error")
+            return render_template('profile.html', data = user_data)
+        else:
+            email = g.user.get('email', None)
+            user = User.get_user(email)
+            user_data = {}
+            user_data['name'] = user.name
+            user_data['email'] = user.email
+            user_data['city'] = user.city
+            user_data['college'] = user.college
+            user_data['address'] = user.address
+            user_data['contact'] = user.contact
+            return render_template('profile.html' , data = user_data)
+
+
+    else:
+        return redirect(url_for('login'))
 
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":

@@ -1,285 +1,172 @@
 <!DOCTYPE html>
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if gt IE 9]> <html lang="en" class="ie"> <![endif]-->
+<!--[if !IE]><!-->
 <html lang="en">
+  <!--<![endif]-->
 
-<head>
-
+  <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>DealBazaar | Search.</title>
+    
+    <!-- Mobile Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>DealBazaar.com</title>
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="images/favicon.ico">
+
+    <!-- Web Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic,500,500italic,700,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Raleway:700,400,300' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=PT+Serif' rel='stylesheet' type='text/css'>
 
     <!-- Bootstrap core CSS -->
-    <link href="/static/stylesheets/bootstrap.min.css" rel="stylesheet">
+    <link href="static/bootstrap/css/bootstrap.css" rel="stylesheet">
 
-    <!-- Material Design Bootstrap -->
-    <link href="/static/stylesheets/mdb.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link href="static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
 
-    <!-- Template styles -->
-    <style rel="stylesheet">
-        /* TEMPLATE STYLES */
-        /* Necessary for full page carousel*/
-        
-        html,
-        body {
-            background-color: #f6f6f6;
-            height: 100%;
-        }
-        /* Navigation*/
-        
-        .navbar {
-            background-color: black;
-            opacity: 0.8;
+    <!-- Fontello CSS -->
+    <link href="static/fonts/fontello/css/fontello.css" rel="stylesheet">
 
-        }
-        
-        .top-nav-collapse {
-            background-color: black;
-        }
-        
-        footer.page-footer {
-            background-color: #4285F4;
-        }
-        
-        @media only screen and (max-width: 768px) {
-            .navbar {
-                background-color: #4285F4;
-            }
-        }
-        /* Carousel*/
-        
-        .carousel {
-            height: 50%;
-        }
-        
-        @media (max-width: 776px) {
-            .carousel {
-                height: 100%;
-            }
-        }
-        
-        .carousel-item,
-        .active {
-            height: 100%;
-        }
-        
-        .carousel-inner {
-            height: 100%;
-        }
-        
-        .carousel-item:nth-child(1) {
-            background-image: url("8.jpg");
-            background-repeat: no-repeat;
-            background-size: cover;
-            opacity: 0.4;
-        }
-        
-        .carousel-item:nth-child(2) {
-            background-image: url("7.jpg");
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
-        
-        .carousel-item:nth-child(3) {
-            background-image: url("9.jpg");
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
-        /*Caption*/
-        
-        .flex-center {
-            color: #fff;
-        }
-    </style>
+    <!-- Plugins -->
+    <link href="static/plugins/magnific-popup/magnific-popup.css" rel="stylesheet">
+    <link href="static/plugins/rs-plugin/css/settings.css" rel="stylesheet">
+    <link href="static/css/animations.css" rel="stylesheet">
+    <link href="static/plugins/owl-carousel/owl-carousel.css" rel="stylesheet">
+    <link href="static/plugins/owl-carousel/owl-transitions.css" rel="stylesheet">
+    <link href="static/plugins/hover/hover.css" rel="stylesheet">   
+    
+    <!-- The Project's core CSS file -->
+    <link href="static/css/style.css" rel="stylesheet" >
+    <!-- The Project's Typography CSS file, includes used fonts -->
+    <!-- Used font for body: Roboto -->
+    <!-- Used font for headings: Raleway -->
+    <link href="static/css/typography-default.css" rel="stylesheet" >
+    <!-- Color Scheme (In order to change the color scheme, replace the blue.css with the color scheme that you prefer)-->
+    <link href="#" data-style="styles" rel="stylesheet">
+    <link href="static/style-switcher/style-switcher.css" rel="stylesheet">
+    
 
-</head>
+    <!-- Custom css --> 
+    <link href="static/css/custom.css" rel="stylesheet">
 
-<body>
+    <script type="text/javascript">
+          $(document).ready(function(){
+            $("#myModal").modal('show');
+          });
+
+          $(function(){
+                $("#myModal1").modal()
+            });
+
+          function sample(){
+            window.location.href = window.history.back(1);}
+    </script>
+<!--
+<script type="text/javascript">
+            $(function(){
+                $("#myModal1").modal()
+            });
+   </script> -->
+  </head>
+
+  <body class="no-trans  transparent-header" style="background-color:#333;">
+
+    <!-- scrollToTop -->
+    <!-- ================ -->
+    <div class="scrollToTop circle"><i class="icon-up-open-big"></i></div>
 
 
-    <!--Navbar-->
-    <nav class="navbar navbar-dark navbar-fixed-top scrolling-navbar">
-
-        <!-- Collapse button-->
-        <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#collapseEx">
-            <i class="fa fa-bars"></i>
-        </button>
-
-        <div class="container">
-
-            <!--Collapse content-->
-            <div class="collapse navbar-toggleable-xs" id="collapseEx">
-                <!--Navbar Brand-->
-                <a class="navbar-brand" href="#" target="_self">LOGO                 </a>
-                <!--Links-->
-                <ul class="nav navbar-nav">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/home">HOME <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">MY SHELF</a>
-                        
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">MY PURCHASES</a>
-                    </li>
-                    
-                </ul>
-                <!--Search form-->
-                <form class="form-inline" action='/view/' method="post">
-                    <input class="form-control" type="text" name='search' placeholder="Search For Items">
-                    <!-- <input type="submit" id ="sub" value="Go!"> -->
-                </form>
+      
+    <!-- Modal -->
+      <div class="modal fade" id="myModal" role="dialog" >
+        <div class="modal-dialog">
+        
+          <!-- Modal content-->
+          <div class="modal-content" style="overflow-y: auto; width:120%;">
+            <div class="modal-header" style="background-color: crimson;">
+            <button type="button" class="close" onclick="sample()">&times;</button>
+              <h4 class="modal-title">Item Description..</h4>          
             </div>
-           
+            <div class="modal-body">
+            <!-- Register -->
+    
+          <div class="row">
 
+              <div class="col-sm-6" style="width:280px; height:400px; overflow:hidden;">
+                  <img src="{{src}}" class="rounded float-xs-right" alt="..." align="center-block" style="padding-top:6.5em;padding-bottom:2em; margin: 0 auto;max-height:100%; max-width:100%;"> 
+              </div>
+              <div class="col-sm-6">
+                  <form class="form-signin" method="POST"> 
+
+                <h3 class="form-signin-heading" align="center-block">{{item.name}}</h3>
+                <br>
+                <br>
+                <input type="label" class="form-control" name="username" placeholder="{{item.description}}" required="" autofocus="" readonly="" />
+                <br>
+                <input type="text" class="form-control" name="username" placeholder="Rs. {{item.original_price}}" required="" autofocus="" readonly="" />
+                <br>
+                <input type="text" class="form-control" name="description" placeholder="Distance From You : {{distance[0]}}" required="" readonly=""/> 
+                <br>
+                <input type="text" class="form-control" name="username" placeholder="Time to reach : {{distance[2]}}" required="" autofocus="" readonly="" />
+                <br>
+                <input type="number" name="amount" class="form-control" placeholder="Place your Bid" required="" autofocus="" />
+                <br>
+                
+                
+                <br>
+                    
+                
+                
+                <input class="btn btn-lg btn-danger btn-block" type="submit" value="Bid" style="background-color:black; border-color:#ffffff;" ></input>
+
+              </form>
+              </div>
+              
+          </div>
+            </div>
+            <div class="modal-footer">
+              
+            </div>
+          </div>
+          
         </div>
-
-    </nav>
- 
+      </div>
+    <!-- Modal Ends -->
+  {% if get_flashed_messages(with_categories=true, category_filter=["error"])|length > 0 %}
+          <div class="modal fade" id="myModal1" role="dialog">
+            <div class="modal-dialog">
     
-   
-    
-    
-   <br>
-   <br>
-   <br>
-   <br>
-   <div class="container ">
+          <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: grey;">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Alert..!!!</h4>          
+                </div>
+            <div class="modal-body">
             {% for error in get_flashed_messages(with_categories=true, category_filter=["error"]) %}
-            <div class="alert alert-dismissable alert-danger" align="center">
-                <!-- <button type="button" class="close" data-dismiss="alert">&times;</button> -->
-                    {{ error[1] }}
-            </div>
+                <p>
+                {{ error[1] }}
+                </p>
             {% endfor %}
-        </div>
-    <div class="container">
-        <div class="row">
-
-            <div class="col-md-6">
-                <!--Card-->
-                <div class="card">
-
-                    <div class="view overlay hm-white-slight">
-                        <img src="{{src}}" class="img-fluid" alt="">
-                        <a href="#">
-                            <div class="mask"></div>
-                        </a>
-                    </div>
-                    
-                    <div class="card-block">
-                        
-                        <h4 class="card-title" align="center">Category : {{item.item_type}}</h4> 
-                        <br>
-
-                         {% if item.sold %}
-                           <h5 class="card-title" align="center">Sold : Yes</h5>
-                        {% else %}
-                            <h5 class="card-title" align="center">Sold : No</h5>
-                        {% endif %}
-                        
-                    </div>
-                    
-
-                </div>
-
-                
             </div>
+            <div class="modal-footer">
+          
+            </div>
+            </div>
+      
+            </div>
+        </div>
 
-        
-        <div class="row">
+  {% endif %}
 
-            <div class="col-md-6">
-                <!--Card-->
-                <div class="card">
-
-                    
-   
-<div class="card-block">
-  <div class="form-group">
-    <label class="control-label col-sm-2" ></label>
-    <div class="col-sm-10">
-      <h4><b>Product Name : </b>{{item.name}}</h4>
-    </div>
-  </div>
-  </div>
-  <div class="card-block">
-  <div class="form-group">
-    <label class="control-label col-sm-2" ></label>
-    <div class="col-sm-10">
-      <h4><b>Description : </b>{{item.description}}</h4>
-    </div>
-  </div>
-  </div>
-  <div class="card-block">
-  <div class="form-group">
-    <label class="control-label col-sm-2" ></label>
-    <div class="col-sm-10">
-      <h4><b>Price : </b>{{item.original_price}}</h4>
-      <h4> Distance : {{distance[0]}}</h4>
-      <h4>Time to reach : {{distance[2]}}</h4>
-    </div>
-  </div>
-  </div>
-  <!-- <div class="form-group">
-    <label class="control-label col-sm-2" ></label>
-    <div class="col-sm-10">
-      <input type="number" name="original_price" class="form-control"  placeholder="Price">
-    </div>
-  </div> -->
-
-
-  <!-- <div class="form-group">
-    <label class="control-label col-sm-2" for="pwd"></label>
-    <div class="col-sm-10"> 
-      <input type="password" class="form-control" id="pwd" placeholder="Enter password">
-    </div>
-  </div> -->
   
-  <!-- <div class="form-group">
-       <label class="control-label col-sm-2" ></label>
-       <div class="col-sm-4">
-           <h5>Upload Image :</h5>
-       </div>
-       <div class=" col-sm-5">
-       <label class = "btn btn-default btn-file" style="width:100%">
-            Browse <input type="file" name="photo" style="display: none;">
-        </label>
-        </div>
-  </div> -->
-                    
-                 <div class="card-block">
-                        
-                        
-<form class="form-horizontal" method="POST" enctype="multipart/form-data">
 
-  <div class="form-group">
-       <label class="control-label col-sm-2" ></label>
-
-    <div class="col-sm-10">
-      <input type="number" name="amount" placeholder="BID" class="form-control">
-    </div>
-
-       <label class = "btn btn-warning col-sm-12">
-       <div >
-            Bid<input type="submit" value="Bid" style="display: none;">
-        </div>
-        </label>
-  </div>
-                        
-                        <!-- <a href="#" class="btn btn-warning flex-center" >POST THE ITEM</a> -->
-                        
-                    </div>
-                    </form>
-
-                </div>
-</div>
-</div>
-                
-   
-</body>
-
+  </body>
 </html>
