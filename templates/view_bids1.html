@@ -30,27 +30,32 @@
 
 <body>
 	<header id="header"><!--header-->
-		<nav class="navbar navbar-inverse" style="z-index:1000; position: absolute; width:100%;" >
-  	<div class="container-fluid">
+      <!-- navbar begins -->
+    <nav class="navbar navbar-inverse" style="z-index:1000; position: absolute; width:100%; " >
+    <div class="container-fluid">
     <div class="navbar-header">
-      	<span style="font-weight:bold;"><a class="navbar-brand" href="#">DealBazaar</a></span>
+        <span style="font-weight:bold;"><a class="navbar-brand" href="#">DealBazaar</a></span>
     </div>
 
-    	<ul class="nav navbar-nav">
-      <li class="active"><a href="#">Home</a></li>
+        <ul class="nav navbar-nav">
+      <li class="active"><a href="/home">Home</a></li>
       <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">My Shelf <span class="caret"></span></a>
         <ul class="dropdown-menu">
-          <li><a href="#">On Bids</a></li>
-          <li><a href="#">Sold Items</a></li>
+          <li><a href="/posted_items">On Bids</a></li>
+          <li><a href="/sold_items">Sold Items</a></li>
         </ul>
       </li>
-      <li><a href="#">My Purchase</a></li>
-    	</ul>
+      <li><a href="/purchased_items">My Purchase</a></li>
+        </ul>
 
-    	<ul class="nav navbar-nav navbar-right">
-      		<li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
-    	</ul>
-  	</div>
+        <ul class="nav navbar-nav navbar-right">
+      
+            <li><a href="/settings" title="Profile Settings"><span class="glyphicon glyphicon-wrench"></span></a></li>
+            <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+        </ul>
+    </div>
+    </nav>
+    <!-- navbar ends -->
 	</header><!--/header-->
 		<br /><br / ><br /><br /><br / ><br />
 		<div class="col-md-9 animated wow fadeInRight" data-wow-delay=".5s">
@@ -109,8 +114,11 @@
 						</tr>
 					   {% endfor %}
 						{% else %}
+            <tr>
+            <td class="cart_product">
         					<h4 align="center"> There are currently no bidders for this product.</h4>
-        
+                  </td>
+            </tr>
 						{% endif %}
 						
 					</tbody>
