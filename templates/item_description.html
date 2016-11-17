@@ -116,6 +116,7 @@
                 <br>
                 <input type="text" class="form-control" name="username" placeholder="Time to reach : {{distance[2]}}" required="" autofocus="" readonly="" />
                 <br>
+                {% if item.sold == 0 %}
                 <input type="number" name="amount" class="form-control" placeholder="Place your Bid" required="" autofocus="" />
                 <br>
                 
@@ -125,7 +126,7 @@
                 
                 
                 <input class="btn btn-lg btn-danger btn-block" type="submit" value="Bid" style="background-color:black; border-color:#ffffff;" ></input>
-
+                {% endif %}
               </form>
               </div>
               
